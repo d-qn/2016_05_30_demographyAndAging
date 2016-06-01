@@ -1,7 +1,7 @@
 ---
-title: "05_lifeExpectancy"
+title: "02_lifeExpectancy_QW"
 author: "Duc-Quang Nguyen"
-date: "24 May 2016"
+date: "1 June 2016"
 output: html_document
 ---
 
@@ -14,12 +14,12 @@ library(swiTheme)
 
 getData <- F
 data.file <- "input/WB_lifeExpectancy_fertilityRate.csv"
+trad.file <- "input/Life Expectancy - Sheet1.csv"
 ```
 
 ```{r getData}
 #### A) Using WB
 indicators <- structure(c('SP.DYN.LE00.IN', 'SP.DYN.TFRT.IN'), names = c('lifeExpectancy', 'fertilityRate'))
-
 
 if(getData) {
 	data.dl <- sapply(1:length(indicators), function(i) {
@@ -37,11 +37,22 @@ if(getData) {
 } else {
   data <- read.csv( file = data.file )
 }
+
+txt <- read.csv(trad.file, row.names = 1, stringsAsFactors = F)
+# discard incomplete translations
+cidx <- unique(which(txt =="" | is.na(txt), T)[,2])
+if(length(cidx > 0)) {
+  warning(paste(colnames(txt)[cidx], collapse = "\t"), " languages will be discarded!", "\n")
+  txt <- txt[,-cidx, drop = F]
+}
+colnames(txt)
+
+
 ```
 
 ## Life expectancy
 
-```{r plot life expectancy}
+```{r data wrangling for plot}
 # interactive 
 library(scales)
 library(swiRcharts)
@@ -120,10 +131,6 @@ cols <- names(colors)[match(le$iso2, colors)]
 le[le$iso2 %in% colors ,'color']  <-  cols[!is.na(cols)]
 le$color <- as.factor(le$color)
 
-
-xaxisPadding <- 13
-
-le$country <- gsub("'", "_", le$country)
 # compute the delta life expectancy
 le <- le %>% group_by(iso2c, country, iso3c) %>% 
   dplyr::mutate(delta = round(last(value) - first(value), 1)) %>%
@@ -131,23 +138,37 @@ le <- le %>% group_by(iso2c, country, iso3c) %>%
   dplyr::mutate(last = round(last(value))) %>% 
   ungroup()
 
+```
+
+
+
+
+```{r plot by language}
 maxYear <- max(le$year)
 minYear <- min(le$year)
-le$tooltip <- paste0("<b>", as.character(le$country), "</b><br>",
+
+
+dd <- le
+xaxisPadding <- 13
+
+dd$country <- gsub("'", "_", dd$country)
+
+
+dd$tooltip <- paste0("<b>", as.character(dd$country), "</b><br>",
               '<div><span style="font-size: 0.8em">',
-              "Life expectancy ", le$last, " years in ", maxYear, ", ",
-              "+", le$pc, "% since ", minYear, "</span></div>")
+              "Life expectancy ", dd$last, " years in ", maxYear, ", ",
+              "+", dd$pc, "% since ", minYear, "</span></div>")
 
 
-gpath <- ggplot(data = le) +  
+gpath <- ggplot(data = dd) +  
   swi_theme(y_gridlines = F, base_size = 8, base_family = font) + 
   scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
-    limits = c(min(le$year), max = max(le$year) + xaxisPadding)) +
+    limits = c(minYear, max = maxYear + xaxisPadding)) +
   ylab("") + 
  coord_fixed(ratio = 0.9) + 
   geom_path_interactive(
     aes(x = year, y = value, group = country, tooltip = tooltip, 
-    data_id = le$country, size = strokeWidth, alpha = alpha, colour = color)) + 
+    data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
   scale_size_manual(values = c(strokeWidth, strokeWidth * 2.5,  strokeWidth * 6), guide=FALSE) +
   scale_alpha_manual(values = c(0.25, 0.7), guide=FALSE) +
   scale_color_manual(values = c("darkgrey", swi_rpal), guide=FALSE) +
@@ -160,11 +181,11 @@ gpath <- ggplot(data = le) +
     plot.title=element_text(margin=margin(rep(0, 4)))
     )+
   labs(title = "", subtitle = "") +
-  geom_text(data = subset(le, iso2c %in% 
+  geom_text(data = subset(dd, iso2c %in% 
       c("1W", countries.iso2, regions.iso2) & year == maxYear),
       aes(x = year, y = value, group = country, 
       color = color, label = as.character(country)),
-      size = 2.4, family = font, nudge_x = 0.2, 
+      size = 2.3, family = font, nudge_x = 0.2, 
       nudge_y= 0.1, check_overlap = T, hjust = 0
 	 )
 gpath
