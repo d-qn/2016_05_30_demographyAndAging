@@ -1,0 +1,208 @@
+---
+title: "05_lifeExpectancy"
+author: "Duc-Quang Nguyen"
+date: "24 May 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(WDI)
+library(dplyr)
+library(tidyr)
+library(htmltools)
+library(swiTheme)
+
+getData <- F
+data.file <- "input/WB_lifeExpectancy_fertilityRate.csv"
+```
+
+```{r getData}
+#### A) Using WB
+indicators <- structure(c('SP.DYN.LE00.IN', 'SP.DYN.TFRT.IN'), names = c('lifeExpectancy', 'fertilityRate'))
+
+
+if(getData) {
+	data.dl <- sapply(1:length(indicators), function(i) {
+		wbdat <- WDI(indicator = indicators[i],
+		  start = 1950,  end = 2016, extra = TRUE, cache = NULL)
+		colnames(wbdat)[3] <- 'value'
+		wbdat$indicator <- names(indicators)[i]
+		wbdat
+	}, simplify = FALSE)
+	
+	data.dl <- do.call(rbind, data.dl)
+	data.dl$indicator <- factor(data.dl$indicator)
+  data <- data.dl %>% select(-capital, -longitude, -latitude, -lending)
+	write.csv(data.dl.sub, file = data.file, row.names = F)
+} else {
+  data <- read.csv( file = data.file )
+}
+```
+
+## Life expectancy
+
+```{r plot life expectancy}
+# interactive 
+library(scales)
+library(swiRcharts)
+library(ggiraph)
+library(swiMap)
+library(htmltools)
+
+strokeWidth <- 0.3
+font <- "Verdana"
+
+swi_iso2 <- c("CH", "CN", "RU", "BR", "IN", "JP", "EU", "ZQ", "ZG", "XU", "Z4")
+countries.iso2 <- c(swi_iso2, c('RW', 'SL', 'KH'))
+
+iso2.todiscard.manualPicked <- c(
+  "AG", "AW", "BB", "BN", "BS", "DJ", "FM", "GD", 
+  "GQ", "KG", "VC", "VI", "VC", "ST", "SB", "PF", 
+  "KI", "BZ", "LC", "PG", "WS", "VU", "UZ", "TJ", 
+  "TM", "TT", "TO", "TG", "SZ", "SK", "SI", "MU",
+  "MR", "MG", "MD", "LS", "AZ", "DO", "GU", "ME",
+  "EC"
+  )
+
+le <- data %>% filter(indicator ==  names(indicators)[1]) %>% arrange(year)
+
+# get the main regions iso2
+regions.all <- unique( le[!is.na(le$region) & (le$region == "Aggregates") ,"country"])
+main.regions <- regions.all[grep("(all income levels|North America)", regions.all)]
+regions.iso2 <- as.character(le[match(main.regions, le$country), 'iso2c'])
+
+## Discard some of the data
+# discard aggregates that are not regions.iso2 and world !
+le <- le %>% filter(region != "Aggregates" | (region == "Aggregates") &
+  iso2c %in% c("1W",regions.iso2))
+
+# discard country with incomplete data
+le.nrow <- le %>% group_by(iso2c, country, iso3c) %>% 
+  dplyr::summarise(l = sum(!is.na(value))) %>% ungroup()
+iso2.todiscard <- le.nrow %>% filter(l != max(l)) %>% 
+  select(iso2c) %>% unlist(use.names = F) %>% as.character()
+
+# discard countries where to SWI translation available
+iso2.todiscard <- c(
+  iso2.todiscard, 
+  as.character(unique(le$iso2)[!unique(le$iso2) %in% countryTranslations[,"iso2"]]),
+  iso2.todiscard.manualPicked 
+)
+le <- le %>% filter(!iso2c %in% iso2.todiscard)
+
+# discard years with only NA
+year.todiscard <- le %>% group_by(year) %>% dplyr::summarise( valid = sum(!is.na(value))) %>% ungroup() %>%
+  filter(valid == 0) %>% select(year) %>% unlist(use.names = F)
+if(length(year.todiscard) > 0) {
+  le <- le %>% filter(!year %in% year.todiscard)
+}
+# rename "all income levels"
+le$country <- gsub("\\(all income levels\\)$", "", le$country)
+
+# Have a thicker line for the world average, aggregates
+le$strokeWidth <- "A"
+le[which(le$iso2c == "1W"),'strokeWidth'] <- "C"
+
+# get only the countries, i.e. region is not "Aggregates" or NA
+le[!is.na(le$region) & (le$iso2 %in% regions.iso2) ,'strokeWidth'] <- "B"
+le$strokeWidth <- as.factor(le$strokeWidth)
+
+# Have less alpha for aggregates and subset countries
+le$alpha <- "A"
+le[!is.na(le$region) & (le$iso2 %in% c("1W", countries.iso2, regions.iso2)) ,'alpha'] <- "B"
+le$alpha <- as.factor(le$alpha)
+
+## Define colors
+le$color <- "A"
+colors <- c(countries.iso2, regions.iso2)
+names(colors) <- LETTERS[2:(length(colors)+1)]
+cols <- names(colors)[match(le$iso2, colors)]
+le[le$iso2 %in% colors ,'color']  <-  cols[!is.na(cols)]
+le$color <- as.factor(le$color)
+
+
+xaxisPadding <- 13
+
+le$country <- gsub("'", "_", le$country)
+# compute the delta life expectancy
+le <- le %>% group_by(iso2c, country, iso3c) %>% 
+  dplyr::mutate(delta = round(last(value) - first(value), 1)) %>%
+  dplyr::mutate(pc = round(((last(value) - first(value)) / first(value)) * 100)) %>% 
+  dplyr::mutate(last = round(last(value))) %>% 
+  ungroup()
+
+maxYear <- max(le$year)
+minYear <- min(le$year)
+le$tooltip <- paste0("<b>", as.character(le$country), "</b><br>",
+              '<div><span style="font-size: 0.8em">',
+              "Life expectancy ", le$last, " years in ", maxYear, ", ",
+              "+", le$pc, "% since ", minYear, "</span></div>")
+
+
+gpath <- ggplot(data = le) +  
+  swi_theme(y_gridlines = F, base_size = 8, base_family = font) + 
+  scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
+    limits = c(min(le$year), max = max(le$year) + xaxisPadding)) +
+  ylab("") + 
+ coord_fixed(ratio = 0.9) + 
+  geom_path_interactive(
+    aes(x = year, y = value, group = country, tooltip = tooltip, 
+    data_id = le$country, size = strokeWidth, alpha = alpha, colour = color)) + 
+  scale_size_manual(values = c(strokeWidth, strokeWidth * 2.5,  strokeWidth * 6), guide=FALSE) +
+  scale_alpha_manual(values = c(0.25, 0.7), guide=FALSE) +
+  scale_color_manual(values = c("darkgrey", swi_rpal), guide=FALSE) +
+  scale_fill_manual(values =  c("darkgrey", swi_rpal), guide=FALSE) +
+  theme(
+    legend.position = "none", 
+    axis.line.y=element_line(color="#2b2b2b", size=0.15),
+    axis.ticks.length=unit(2.5, "pt"),
+    plot.margin = unit(c(-15, 0, -15, -3.5), "mm"),
+    plot.title=element_text(margin=margin(rep(0, 4)))
+    )+
+  labs(title = "", subtitle = "") +
+  geom_text(data = subset(le, iso2c %in% 
+      c("1W", countries.iso2, regions.iso2) & year == maxYear),
+      aes(x = year, y = value, group = country, 
+      color = color, label = as.character(country)),
+      size = 2.4, family = font, nudge_x = 0.2, 
+      nudge_y= 0.1, check_overlap = T, hjust = 0
+	 )
+gpath
+
+
+igpath <- ggiraph(
+  code = {print(gpath)},
+  hover_css = "stroke-opacity:0.98;stroke-width:2.2px;stroke:black;",
+  tooltip_opacity = 0.7,
+  pointsize = 15,
+  width = "100%",
+  #height = "500px",
+  height_svg = 7.1,
+  width_svg = 7,
+  fontname_sans = "Verdana",
+  fontname_serif = "Verdana"
+)
+igpath
+
+footer <- paste0(
+  "source: ", htmlLink("http://data.worldbank.org/indicator/SP.DYN.LE00.IN", 
+  "World Bank"), " | made with R ", 
+  htmlLink("https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html", "ggiraph"), 
+  " & inspired by ", htmlLink("http://projects.flowingdata.com/life-expectancy/", 
+  "Nathan Yau's graphic"), " | swissinfo.ch | ", 
+  htmlLink("https://twitter.com/duc_qn", "@duc_qn"))
+
+save_html(
+  tags$html(
+    tags$head(includeHTML("styles.html")),
+    tags$body(    
+      h2("Life expectancy"),
+      div(class = "descr", HTML("In years, from 1960 until 2104. Each line is for a country or a region. Hover over a line to highlight a country.<br>Life expectancy at birth indicates the number of years a newborn infant would live if prevailing patterns of mortality at the time of its birth were to stay the same throughout its life.")),
+      div(class="graphic", igpath),
+      div(id = "cite", HTML(footer)),
+      HTML('<script type="text/javascript" src="https://www.swissinfo.ch/static/Themes/basic/js/vendor/iframeResizer.contentWindow.3.5.3.min.js"></script>')  
+    )), file = "lifeExpecancy_interactiveLine.html")  
+
+```
+
+

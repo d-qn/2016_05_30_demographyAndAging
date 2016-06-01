@@ -1,0 +1,160 @@
+---
+title: "01_ageDistribution"
+author: "Duc-Quang Nguyen"
+date: "3 May 2016"
+output: html_document
+---
+
+# Basic animated age distribution
+
+## Text
+
+Le vieillissement de la population s'accélère à un rythme sans précédent. Si par le passé, seules les économies développées était concernées, aujourd'hui c'est un phénomène touchant le monde entier. A travers une série hebdomadaire de graphiques, swissinfo explique les détails de ce phénomène aux implications multiples pour les retraites, les coûts de la santé et la croissance mondiale. 
+
+Après notemment l'Allemagne, l'Italie et le Japon, la Suisse est des pays avec la population la plus âgée. Si on a conscience que la population vit beaucoup plus longtemps qu’autrefois, il est toutefois difficile de realiser à quel point la pyramide des âges s'est transformé au cours du dernier siècle. Le graphique animé ci-desssous illustre ces changements. En 1860, la Suisse comptait 12 personnes âgées de 20 à 64 ans pour chaque personne âgée de 65 ans et plus. Aujourd'hui, ce rapport a drastiquement diminué et n'est plus que de 4 pour 1
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE)
+preProcesssPxExtract <- FALSE
+
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(swiTheme)
+library(animation)
+```
+
+## Load data
+```{r dataload, echo = F}
+if(preProcesssPxExtract) {
+  data.read <- read.csv("input/contenate_allData.csv", stringsAsFactors = F, check.names = F)
+  rownames(data.read) <- data.read$Age
+  data.read %<>% select(-Age)
+  
+  d2.read <- read.table("data/px-x-0102010000_101_2013_2014.csv", 
+    sep = "\t", stringsAsFactors = F , header = T, check.names = F, encoding = "latin1")
+  # rehsape! 
+  d2.read <- d2.read %>% select(-`Canton (-) / District (>>) / Commune (......)`, 
+    -`Type de population`, -`Sexe`, -`Nationalité`)
+  colnames(d2.read)[2:ncol(d2.read)] <- gsub(" an.*$", "", colnames(d2.read)[2:ncol(d2.read)]  )
+  d2 <- t(d2.read)[-1,]
+  colnames(d2) <- t(d2.read)[1,]
+
+  # sum age 99 & 100+
+  d2["99",] <-  d2["99",] + d2["100",]
+  d2 <- d2[rownames(d2) != "100",]
+  stopifnot(nrow(d2) == nrow(data.read))
+
+  rownames(d2) <- rownames(data.read)  
+  data <- cbind(data.read, d2)
+  write.csv(data, file = "input/concat_until2014.csv")
+} else {
+  data <- read.csv( "input/concat_until2014.csv", row.names = 1, check.names = F)
+}
+
+txt <- read.csv("input/Swiss Population distribution - Sheet1.csv", row.names = 1, stringsAsFactors = F)
+# discard incomplete translations
+cidx <- unique(which(txt =="" | is.na(txt), T)[,2])
+if(length(cidx > 0)) {
+  warning(paste(colnames(txt)[cidx], collapse = "\t"), " languages will be discarded!", "\n")
+  txt <- txt[,-cidx, drop = F]
+}
+colnames(txt)
+
+
+# convert to long
+data$age <- rownames(data)
+data <- data %>% gather("year", "n", -age)
+
+# add yearly sum and yearly proportion by age
+data %<>% group_by(year) %>% mutate (yearly = sum(n)) %>% ungroup()
+data$prop <- data$n / data$yearly
+```
+
+```{r key numbers, echo = F}
+# dd <- data %>% filter(year == "2014") %>% select(-yearly, -prop)
+# ages <- do.call(c, lapply(1:nrow(dd), function(i) {
+#   unlist(as.numeric(rep(dd[i,'age'], dd[i,'n'])), use.names = F)
+# }))
+```
+
+```{r plot}
+xlabel <- rep('', length(unique(data$age)))
+idx.x <- c(seq(1, length(unique(data$age)), 10), length(unique(data$age)))
+xlabel[idx.x] <- unique(data$age)[idx.x]
+
+data$age <- factor(data$age)
+data$age <- reorder(data$age, as.numeric(gsub("\\+", "", data$age)))
+data$year <- as.numeric(data$year)
+
+y <- 2010
+
+
+plotayear <- function(
+  data, y, title, subtitle, caption, 
+  base.font = "OpenSans-CondensedLight", font.title = "Open Sans", font.txt = "Open Sans") {
+  
+  plot <- ggplot(data = filter(data, year == y)) + 
+    geom_area(aes(as.numeric(age), prop), fill = "#663333", alpha = 1) + 
+    scale_x_continuous(
+      name = "age", 
+      breaks = c(seq(1, 100, 10), 100),
+      labels = levels(data$age)[c(seq(1, 100, 10), 100)],
+      expand = c(0.005, 0)) +
+    scale_y_continuous(
+      name = "", 
+      limits = c(0, max(data$prop)), 
+      expand = c(0, 0), 
+      labels = scales::percent, 
+      breaks= scales::pretty_breaks( n = 4)) +
+    swi_theme(
+      y_gridlines = F, 
+      base_family = base.font, 
+      title_family = font.title) + 
+    theme(
+      plot.title = element_text(size = 26),
+      axis.text = element_text(size = 18),
+      plot.subtitle = element_text(size = 18),
+      plot.caption = element_text(size = 12),
+      plot.margin = unit(c(5, 4, 4, -1), "mm")
+      ) +  
+    # the year in big
+    geom_text(data = data.frame(
+      x = nlevels(data$age)-5, 
+      y = max(data$prop) - 0.0037, label = as.character(y)),
+      aes(label = label, x = x, y = y), family = font.txt, 
+      alpha = 0.35, size = 70,  color = "#d4c3aa", hjust = 1) +
+   labs(title=title, subtitle = subtitle, caption=caption) 
+  
+  print(plot)
+}
+
+
+sapply(colnames(txt), function(lang) {
+  saveGIF({
+    for(y in c(unique(data$year), rep(max(data$year), 4))) {
+      invisible(
+        plotayear(
+          data, 
+          y, 
+          title = txt["main.title", lang], 
+          subtitle = txt["subtitle", lang], 
+          caption = txt["source.txt", lang],
+          base.font = txt["base.font", lang], 
+          font.title = txt["font.title", lang], 
+          font.txt = txt["font.txt", lang]
+          )
+        )
+    }
+  }, movie.name = paste0("swissPopulationAge_", lang, ".gif"), interval = 0.2, 
+  ani.width = 640, ani.height = 770, loop = TRUE)
+})
+
+
+
+
+
+
+
+
+```
