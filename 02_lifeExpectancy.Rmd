@@ -61,7 +61,6 @@ library(swiMap)
 library(htmltools)
 
 strokeWidth <- 0.3
-font <- "Verdana"
 
 swi_iso2 <- c("CH", "CN", "RU", "BR", "IN", "JP", "EU", "ZQ", "ZG", "XU", "Z4")
 countries.iso2 <- c(swi_iso2, c('RW', 'SL', 'KH'))
@@ -143,13 +142,88 @@ le <- le %>% group_by(iso2c, country, iso3c) %>%
 
 
 
+```{r plot helper}
+
+static_lineChart <- function(data, xaxisPadding = 11, label.font = "Open Sans Condensed") {
+  
+  maxYear <- max(data$year)
+  minYear <- min(data$year)
+  
+  ggplot(data = dd) +  
+    swi_theme(y_gridlines = F, base_size = 8, base_family = "Verdana") + 
+    scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
+                       limits = c(minYear, max = maxYear + xaxisPadding)) +
+    ylab("") + 
+    coord_fixed(ratio = 0.9) + 
+    geom_path_interactive(
+      aes(x = year, y = value, group = country, tooltip = tooltip, 
+          data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
+    scale_size_manual(values = c(strokeWidth, strokeWidth * 2.5,  strokeWidth * 6), guide=FALSE) +
+    scale_alpha_manual(values = c(0.25, 0.7), guide=FALSE) +
+    scale_color_manual(values = c("darkgrey", swi_rpal), guide=FALSE) +
+    scale_fill_manual(values =  c("darkgrey", swi_rpal), guide=FALSE) +
+    theme(
+      legend.position = "none", 
+      axis.line.y=element_line(color="#2b2b2b", size=0.15),
+      axis.text = element_text(size = 12),
+      axis.ticks.length=unit(2.5, "pt"),
+      plot.margin = unit(c(-15, 0, -15, -3.5), "mm"),
+      plot.title=element_text(margin=margin(rep(0, 4)))
+    ) +
+    labs(title = "", subtitle = NULL) +
+    geom_text(data = subset(dd, iso2c %in% 
+      c("1W", countries.iso2, regions.iso2) & year == maxYear),
+              aes(x = year, y = value, group = country, 
+                  color = color, label = as.character(country)),
+              size = 3.2, family = label.font, nudge_x = 0.2, 
+              nudge_y= 0.1, check_overlap = T, hjust = 0
+    )
+}
+
+interactive_chart <- function(gpath, fontname = 'Open Sans Condensed') {
+ ggiraph(
+  code = {print(gpath)},
+  hover_css = "stroke-opacity:0.98;stroke-width:2.2px;stroke:black;",
+  tooltip_opacity = 0.7,
+  pointsize = 15,
+  width = "100%",
+  #height = "500px",
+  height_svg = 7.1,
+  width_svg = 7,
+  fontname_sans = fontname,
+  fontname_serif = fontname
+) 
+}
+
+
+
+```
+
 ```{r plot by language}
-maxYear <- max(le$year)
-minYear <- min(le$year)
+
+for (lang in colnames(txt)) {
+  dd <- le
+  
+  fontname <- txt["typeface.svg", lang] # font ggplot2 svg
+  dd$country <- countryTranslation(as.character(dd$iso2c), lang)[,2]
+  dd$country <- gsub("'", "_", dd$country)
+  
+  dd$tooltip <- paste0("<b>", as.character(dd$country), "</b><br>",
+              '<div><span style="font-size: 0.8em">',
+              txt["tooltip.le", lang], " ", dd$last, " ", txt["tooltip.2", lang], 
+              " ", maxYear, ", ",
+              "+", dd$pc, "%  ", txt["tooltip.3", lang], " ", minYear, "</span></div>")
+  
+  chart <- static_lineChart(dd, label.font = "Open Sans")
+}
+
+
+
+
 
 
 dd <- le
-xaxisPadding <- 13
+xaxisPadding <- 11
 
 dd$country <- gsub("'", "_", dd$country)
 
@@ -160,50 +234,7 @@ dd$tooltip <- paste0("<b>", as.character(dd$country), "</b><br>",
               "+", dd$pc, "% since ", minYear, "</span></div>")
 
 
-gpath <- ggplot(data = dd) +  
-  swi_theme(y_gridlines = F, base_size = 8, base_family = font) + 
-  scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
-    limits = c(minYear, max = maxYear + xaxisPadding)) +
-  ylab("") + 
- coord_fixed(ratio = 0.9) + 
-  geom_path_interactive(
-    aes(x = year, y = value, group = country, tooltip = tooltip, 
-    data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
-  scale_size_manual(values = c(strokeWidth, strokeWidth * 2.5,  strokeWidth * 6), guide=FALSE) +
-  scale_alpha_manual(values = c(0.25, 0.7), guide=FALSE) +
-  scale_color_manual(values = c("darkgrey", swi_rpal), guide=FALSE) +
-  scale_fill_manual(values =  c("darkgrey", swi_rpal), guide=FALSE) +
-  theme(
-    legend.position = "none", 
-    axis.line.y=element_line(color="#2b2b2b", size=0.15),
-    axis.ticks.length=unit(2.5, "pt"),
-    plot.margin = unit(c(-15, 0, -15, -3.5), "mm"),
-    plot.title=element_text(margin=margin(rep(0, 4)))
-    )+
-  labs(title = "", subtitle = "") +
-  geom_text(data = subset(dd, iso2c %in% 
-      c("1W", countries.iso2, regions.iso2) & year == maxYear),
-      aes(x = year, y = value, group = country, 
-      color = color, label = as.character(country)),
-      size = 2.3, family = font, nudge_x = 0.2, 
-      nudge_y= 0.1, check_overlap = T, hjust = 0
-	 )
-gpath
 
-
-igpath <- ggiraph(
-  code = {print(gpath)},
-  hover_css = "stroke-opacity:0.98;stroke-width:2.2px;stroke:black;",
-  tooltip_opacity = 0.7,
-  pointsize = 15,
-  width = "100%",
-  #height = "500px",
-  height_svg = 7.1,
-  width_svg = 7,
-  fontname_sans = "Verdana",
-  fontname_serif = "Verdana"
-)
-igpath
 
 footer <- paste0(
   "source: ", htmlLink("http://data.worldbank.org/indicator/SP.DYN.LE00.IN", 
