@@ -67,6 +67,14 @@ img {
 </div>
 
 
+<div id="note-about-responsive-svg-and-explorer" class="section level3">
+<h3>Note about responsive SVG and explorer !!</h3>
+<p>Based on: <a href="http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/" class="uri">http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/</a></p>
+<ul>
+<li><p>Add <code>&lt;div class=&quot;container&quot;&gt; before the inline SVG / graphic</code></p></li>
+<li><p>Add this in the stylesheet:</p></li>
+</ul>
+<p><code>.container {     width: 100%;     height: 0;     padding-top: 99%;     position: relative; } svg {     position: absolute;     top: 0;     left: 0; }</code></p>
 <pre class="r"><code>#### A) Using WB
 
 if(getData) {
@@ -95,6 +103,7 @@ if(length(cidx &gt; 0)) {
 <pre><code>## Warning: EN  DE  IT  PT  RU  ES  JA  ZH languages will be discarded!</code></pre>
 <pre class="r"><code>colnames(txt)</code></pre>
 <pre><code>## [1] &quot;FR&quot;</code></pre>
+</div>
 <div id="life-expectancy" class="section level2">
 <h2>Life expectancy</h2>
 <pre class="r"><code># interactive 
@@ -236,7 +245,7 @@ interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
   tooltip_opacity = 0.7,
   pointsize = 15,
   width = &quot;100%&quot;,
-  #height = &quot;500px&quot;,
+  height = &quot;100%&quot;,
   height_svg = 7.1,
   width_svg = 7,
   fontname_sans = fontname,
@@ -276,7 +285,9 @@ interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
       h2(txt[&quot;main.title&quot;, lang]),
       div(class = &quot;descr&quot;, HTML(txt[&quot;subtitle1&quot;, lang])),
       h3(txt[&quot;h3&quot;, lang]),
-      div(class=&quot;graphic&quot;, ichart),
+      div(class=&quot;container&quot;,
+        div(class=&quot;graphic&quot;, ichart)
+      ),
       div(id = &quot;footer&quot;, HTML(txt[&quot;caption&quot;, lang])),
       div(id = &quot;cite&quot;, HTML(footer)),
       HTML('&lt;script type=&quot;text/javascript&quot; src=&quot;https://www.swissinfo.ch/static/Themes/basic/js/vendor/iframeResizer.contentWindow.3.5.3.min.js&quot;&gt;&lt;/script&gt;')  

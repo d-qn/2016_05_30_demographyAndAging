@@ -76,8 +76,8 @@ img {
 </div>
 <div id="load-data" class="section level2">
 <h2>Load data</h2>
-<pre><code>## Warning: EN  DE  IT  PT  RU  ES  JA  ZH languages will be discarded!</code></pre>
-<pre><code>## [1] &quot;FR&quot;</code></pre>
+<pre><code>## Warning: EN  DE  IT  RU  ES  JA  ZH languages will be discarded!</code></pre>
+<pre><code>## [1] &quot;FR&quot; &quot;PT&quot;</code></pre>
 <pre class="r"><code>xlabel &lt;- rep('', length(unique(data$age)))
 idx.x &lt;- c(seq(1, length(unique(data$age)), 10), length(unique(data$age)))
 xlabel[idx.x] &lt;- unique(data$age)[idx.x]
@@ -148,8 +148,8 @@ sapply(colnames(txt), function(lang) {
   }, movie.name = paste0(&quot;swissPopulationAge_&quot;, lang, &quot;.gif&quot;), interval = 0.2, 
   ani.width = 640, ani.height = 770, loop = TRUE)
 })</code></pre>
-<pre><code>##   FR 
-## TRUE</code></pre>
+<pre><code>##   FR   PT 
+## TRUE TRUE</code></pre>
 </div>
 </div>
 

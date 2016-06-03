@@ -71,14 +71,8 @@ data %<>% group_by(year) %>% mutate (yearly = sum(n)) %>% ungroup()
 data$prop <- data$n / data$yearly
 ```
 
-```{r key numbers, echo = F}
-# dd <- data %>% filter(year == "2014") %>% select(-yearly, -prop)
-# ages <- do.call(c, lapply(1:nrow(dd), function(i) {
-#   unlist(as.numeric(rep(dd[i,'age'], dd[i,'n'])), use.names = F)
-# }))
-```
-
 ```{r plot}
+
 xlabel <- rep('', length(unique(data$age)))
 idx.x <- c(seq(1, length(unique(data$age)), 10), length(unique(data$age)))
 xlabel[idx.x] <- unique(data$age)[idx.x]

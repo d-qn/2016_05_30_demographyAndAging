@@ -1,7 +1,7 @@
 ---
-title: "02_lifeExpectancy_QW"
+title: "03_fertilityRate_QW"
 author: "Duc-Quang Nguyen"
-date: "1 June 2016"
+date: "3 June 2016"
 output: html_document
 ---
 
@@ -12,44 +12,45 @@ library(tidyr)
 library(htmltools)
 library(swiTheme)
 
-getData <- F
-data.file <- "input/WB_lifeExpectancy_fertilityRate.csv"
-trad.file <- "input/Life Expectancy - Sheet1.csv"
+getData <- T
+data.file <- "input/WB_fertilityRate.csv"
+#trad.file <- "input/"
 ```
 
 ```{r getData}
 #### A) Using WB
-indicators <- structure(c('SP.DYN.LE00.IN', 'SP.DYN.TFRT.IN'), names = c('lifeExpectancy', 'fertilityRate'))
 
 if(getData) {
-	data.dl <- sapply(1:length(indicators), function(i) {
-		wbdat <- WDI(indicator = indicators[i],
-		  start = 1950,  end = 2016, extra = TRUE, cache = NULL)
-		colnames(wbdat)[3] <- 'value'
-		wbdat$indicator <- names(indicators)[i]
-		wbdat
-	}, simplify = FALSE)
-	
-	data.dl <- do.call(rbind, data.dl)
-	data.dl$indicator <- factor(data.dl$indicator)
+  data.dl <- WDI(
+    indicator = 'SP.DYN.TFRT.IN',
+    start = 1950,  
+    end = 2016, 
+    extra = TRUE, 
+    cache = NULL
+  )
+  colnames(data.dl)[3] <- 'value'
+
   data <- data.dl %>% select(-capital, -longitude, -latitude, -lending)
-	write.csv(data.dl.sub, file = data.file, row.names = F)
+	write.csv(data, file = data.file, row.names = F)
 } else {
   data <- read.csv( file = data.file )
 }
 
-txt <- read.csv(trad.file, row.names = 1, stringsAsFactors = F)
-# discard incomplete translations
-cidx <- unique(which(txt =="" | is.na(txt), T)[,2])
-if(length(cidx > 0)) {
-  warning(paste(colnames(txt)[cidx], collapse = "\t"), " languages will be discarded!", "\n")
-  txt <- txt[,-cidx, drop = F]
+if(exists("trad.file")) {
+  txt <- read.csv(trad.file, row.names = 1, stringsAsFactors = F)
+  # discard incomplete translations
+  cidx <- unique(which(txt =="" | is.na(txt), T)[,2])
+  if(length(cidx > 0)) {
+    warning(paste(colnames(txt)[cidx], collapse = "\t"), " languages will be discarded!", "\n")
+    txt <- txt[,-cidx, drop = F]
+  }
+  colnames(txt)  
 }
-colnames(txt)
+
 
 ```
 
-## Life expectancy
+## Fertility Rates
 
 ```{r data wrangling for plot}
 # interactive 
@@ -62,7 +63,7 @@ library(htmltools)
 strokeWidth <- 0.3
 
 swi_iso2 <- c("CH", "CN", "RU", "BR", "IN", "JP", "EU", "ZQ", "ZG", "XU", "Z4")
-countries.iso2 <- c(swi_iso2, c('RW', 'SL', 'KH'))
+countries.iso2 <- c(swi_iso2, c('RW', 'YE', 'NE'))
 
 iso2.todiscard.manualPicked <- c(
   "AG", "AW", "BB", "BN", "BS", "DJ", "FM", "GD", 
@@ -73,71 +74,70 @@ iso2.todiscard.manualPicked <- c(
   "EC"
   )
 
-le <- data %>% filter(indicator ==  names(indicators)[1]) %>% arrange(year)
+fr <- data %>% arrange(year)
 
 # get the main regions iso2
-regions.all <- unique( le[!is.na(le$region) & (le$region == "Aggregates") ,"country"])
+regions.all <- unique( fr[!is.na(fr$region) & (fr$region == "Aggregates") ,"country"])
 main.regions <- regions.all[grep("(all income levels|North America)", regions.all)]
-regions.iso2 <- as.character(le[match(main.regions, le$country), 'iso2c'])
+regions.iso2 <- as.character(fr[match(main.regions, fr$country), 'iso2c'])
 
 ## Discard some of the data
 # discard aggregates that are not regions.iso2 and world !
-le <- le %>% filter(region != "Aggregates" | (region == "Aggregates") &
+fr <- fr %>% filter(region != "Aggregates" | (region == "Aggregates") &
   iso2c %in% c("1W",regions.iso2))
 
 # discard country with incomplete data
-le.nrow <- le %>% group_by(iso2c, country, iso3c) %>% 
+fr.nrow <- fr %>% group_by(iso2c, country, iso3c) %>% 
   dplyr::summarise(l = sum(!is.na(value))) %>% ungroup()
-iso2.todiscard <- le.nrow %>% filter(l != max(l)) %>% 
+iso2.todiscard <- fr.nrow %>% filter(l != max(l)) %>% 
   select(iso2c) %>% unlist(use.names = F) %>% as.character()
 
 # discard countries where to SWI translation available
 iso2.todiscard <- c(
   iso2.todiscard, 
-  as.character(unique(le$iso2)[!unique(le$iso2) %in% countryTranslations[,"iso2"]]),
+  as.character(unique(fr$iso2)[!unique(fr$iso2) %in% countryTranslations[,"iso2"]]),
   iso2.todiscard.manualPicked 
 )
-le <- le %>% filter(!iso2c %in% iso2.todiscard)
+fr <- fr %>% filter(!iso2c %in% iso2.todiscard)
 
 # discard years with only NA
-year.todiscard <- le %>% group_by(year) %>% dplyr::summarise( valid = sum(!is.na(value))) %>% ungroup() %>%
+year.todiscard <- fr %>% group_by(year) %>% dplyr::summarise( valid = sum(!is.na(value))) %>% ungroup() %>%
   filter(valid == 0) %>% select(year) %>% unlist(use.names = F)
 if(length(year.todiscard) > 0) {
-  le <- le %>% filter(!year %in% year.todiscard)
+  fr <- fr %>% filter(!year %in% year.todiscard)
 }
 # rename "all income levels"
-le$country <- gsub("\\(all income levels\\)$", "", le$country)
+fr$country <- gsub("\\(all income levels\\)$", "", fr$country)
 
 # Have a thicker line for the world average, aggregates
-le$strokeWidth <- "A"
-le[which(le$iso2c == "1W"),'strokeWidth'] <- "C"
+fr$strokeWidth <- "A"
+fr[which(fr$iso2c == "1W"),'strokeWidth'] <- "C"
 
 # get only the countries, i.e. region is not "Aggregates" or NA
-le[!is.na(le$region) & (le$iso2 %in% regions.iso2) ,'strokeWidth'] <- "B"
-le$strokeWidth <- as.factor(le$strokeWidth)
+fr[!is.na(fr$region) & (fr$iso2 %in% regions.iso2) ,'strokeWidth'] <- "B"
+fr$strokeWidth <- as.factor(fr$strokeWidth)
 
 # Have less alpha for aggregates and subset countries
-le$alpha <- "A"
-le[!is.na(le$region) & (le$iso2 %in% c("1W", countries.iso2, regions.iso2)) ,'alpha'] <- "B"
-le$alpha <- as.factor(le$alpha)
+fr$alpha <- "A"
+fr[!is.na(fr$region) & (fr$iso2 %in% c("1W", countries.iso2, regions.iso2)) ,'alpha'] <- "B"
+fr$alpha <- as.factor(fr$alpha)
 
 ## Define colors
-le$color <- "A"
+fr$color <- "A"
 colors <- c(countries.iso2, regions.iso2)
 names(colors) <- LETTERS[2:(length(colors)+1)]
-cols <- names(colors)[match(le$iso2, colors)]
-le[le$iso2 %in% colors ,'color']  <-  cols[!is.na(cols)]
-le$color <- as.factor(le$color)
+cols <- names(colors)[match(fr$iso2, colors)]
+fr[fr$iso2 %in% colors ,'color']  <-  cols[!is.na(cols)]
+fr$color <- as.factor(fr$color)
 
 # compute the delta life expectancy
-le <- le %>% group_by(iso2c, country, iso3c) %>% 
+fr <- fr %>% group_by(iso2c, country, iso3c) %>% 
   dplyr::mutate(delta = round(last(value) - first(value), 1)) %>%
   dplyr::mutate(pc = round(((last(value) - first(value)) / first(value)) * 100)) %>% 
-  dplyr::mutate(last = round(last(value))) %>% 
+  dplyr::mutate(last = round(last(value), 1)) %>% 
   ungroup()
 
 ```
-
 
 
 
@@ -201,7 +201,7 @@ interactive_chart <- function(gpath, fontname = 'Open Sans Condensed') {
 ```{r plot by language}
 
 for (lang in colnames(txt)) {
-  dd <- le
+  dd <- fr
   maxYear <- max(dd$year)
   minYear <- min(dd$year)
   

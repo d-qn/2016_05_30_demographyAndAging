@@ -5,6 +5,28 @@ date: "1 June 2016"
 output: html_document
 ---
 
+### Note about responsive SVG and explorer !!
+
+Based on: http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/
+
+* Add
+`<div class="container"> before the inline SVG / graphic`
+
+* Add this in the stylesheet: 
+
+``.container {
+    width: 100%;
+    height: 0;
+    padding-top: 99%;
+    position: relative;
+}
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+``
+
 ```{r setup, include=FALSE}
 library(WDI)
 library(dplyr)
@@ -180,7 +202,7 @@ interactive_chart <- function(gpath, fontname = 'Open Sans Condensed') {
   tooltip_opacity = 0.7,
   pointsize = 15,
   width = "100%",
-  #height = "500px",
+  height = "100%",
   height_svg = 7.1,
   width_svg = 7,
   fontname_sans = fontname,
@@ -227,7 +249,9 @@ for (lang in colnames(txt)) {
       h2(txt["main.title", lang]),
       div(class = "descr", HTML(txt["subtitle1", lang])),
       h3(txt["h3", lang]),
-      div(class="graphic", ichart),
+      div(class="container",
+        div(class="graphic", ichart)
+      ),
       div(id = "footer", HTML(txt["caption", lang])),
       div(id = "cite", HTML(footer)),
       HTML('<script type="text/javascript" src="https://www.swissinfo.ch/static/Themes/basic/js/vendor/iframeResizer.contentWindow.3.5.3.min.js"></script>')  

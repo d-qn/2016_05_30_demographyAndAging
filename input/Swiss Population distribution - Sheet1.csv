@@ -1,8 +1,8 @@
 code,EN,FR,DE,IT,PT,RU,ES,JA,ZH
-main.title,,Du triangle à la montagne alpine...,,,,,,,
-subtitle,,Proportion de la population Suisse par âge (1860-2014),,,,,,,
-source.txt,,Source: Office fédéral de la statistique | swissinfo.ch,,,,,,,
-age,,age,,,,,,,
+main.title,,Du triangle à la montagne alpine...,,,Do triângulo à montanha dos Alpes...,,,,
+subtitle,,Proportion de la population Suisse par âge (1860-2014),,,Proporção da população suíça por idade (1860-2014),,,,
+source.txt,,Source: Office fédéral de la statistique | swissinfo.ch,,,Fonte: Secretaria Federal de Estatísticas da Suíça | swissinfo.ch,,,,
+age,,age,,,idade,,,,
 base.font,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,Yuanti TC,Yuanti TC
 font.title,Open Sans Semibold,Open Sans Semibold,Open Sans Semibold,Open Sans Semibold,Open Sans Semibold,Open Sans Semibold,Open Sans Semibold,Yuanti TC Light,Yuanti TC Light
 font.txt,Open Sans,Open Sans,Open Sans,Open Sans,Open Sans,Open Sans,Open Sans,Yuanti TC,Yuanti TC
