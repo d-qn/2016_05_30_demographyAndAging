@@ -212,7 +212,7 @@ le &lt;- le %&gt;% group_by(iso2c, country, iso3c) %&gt;%
     scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = &quot;&quot;,
                        limits = c(minYear, max = maxYear + xaxisPadding)) +
     ylab(&quot;&quot;) + 
-    coord_fixed(ratio = 0.9) + 
+    coord_fixed(ratio = 1) + 
     geom_path_interactive(
       aes(x = year, y = value, group = country, tooltip = tooltip, 
           data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
@@ -225,7 +225,7 @@ le &lt;- le %&gt;% group_by(iso2c, country, iso3c) %&gt;%
       axis.line = element_blank(),
       axis.text = element_text(size = 12),
       axis.ticks.length=unit(2.5, &quot;pt&quot;),
-      plot.margin = unit(c(-30, 0, -25, -3.5), &quot;mm&quot;),
+      plot.margin = unit(c(-30, 0, -20, -3.5), &quot;mm&quot;),
       plot.title=element_text(margin=margin(rep(0, 4)))
     ) +
     labs(title = &quot;&quot;, subtitle = NULL) +
@@ -265,7 +265,7 @@ interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
               '&lt;div&gt;&lt;span style=&quot;font-size: 0.8em&quot;&gt;',
               txt[&quot;h3&quot;, lang], &quot; &quot;, dd$last, &quot; &quot;, txt[&quot;tooltip.2&quot;, lang], 
               &quot; &quot;, maxYear, &quot;, &quot;,
-              &quot;+&quot;, dd$pc, &quot;%  &quot;, txt[&quot;tooltip.3&quot;, lang], &quot; &quot;, minYear, &quot;&lt;/span&gt;&lt;/div&gt;&quot;)
+              &quot;+&quot;, dd$pc, &quot;% &quot;, txt[&quot;tooltip.3&quot;, lang], &quot; &quot;, minYear, &quot;&lt;/span&gt;&lt;/div&gt;&quot;)
   
   chart &lt;- static_lineChart(dd, label.font = fontname)
   ichart &lt;- interactive_chart(chart, fontname = fontname)

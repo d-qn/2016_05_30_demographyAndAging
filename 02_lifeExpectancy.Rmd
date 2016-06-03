@@ -169,7 +169,7 @@ static_lineChart <- function(data, xaxisPadding = 14, label.font = "Open Sans Co
     scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
                        limits = c(minYear, max = maxYear + xaxisPadding)) +
     ylab("") + 
-    coord_fixed(ratio = 0.9) + 
+    coord_fixed(ratio = 1) + 
     geom_path_interactive(
       aes(x = year, y = value, group = country, tooltip = tooltip, 
           data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
@@ -182,7 +182,7 @@ static_lineChart <- function(data, xaxisPadding = 14, label.font = "Open Sans Co
       axis.line = element_blank(),
       axis.text = element_text(size = 12),
       axis.ticks.length=unit(2.5, "pt"),
-      plot.margin = unit(c(-30, 0, -25, -3.5), "mm"),
+      plot.margin = unit(c(-30, 0, -20, -3.5), "mm"),
       plot.title=element_text(margin=margin(rep(0, 4)))
     ) +
     labs(title = "", subtitle = NULL) +
