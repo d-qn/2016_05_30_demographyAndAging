@@ -144,7 +144,7 @@ le <- le %>% group_by(iso2c, country, iso3c) %>%
 
 ```{r plot helper}
 
-static_lineChart <- function(data, xaxisPadding = 11, label.font = "Open Sans Condensed") {
+static_lineChart <- function(data, xaxisPadding = 14, label.font = "Open Sans Condensed") {
   
   maxYear <- max(data$year)
   minYear <- min(data$year)
@@ -164,10 +164,10 @@ static_lineChart <- function(data, xaxisPadding = 11, label.font = "Open Sans Co
     scale_fill_manual(values =  c("darkgrey", swi_rpal), guide=FALSE) +
     theme(
       legend.position = "none", 
-      axis.line.y=element_line(color="#2b2b2b", size=0.15),
+      axis.line = element_blank(),
       axis.text = element_text(size = 12),
       axis.ticks.length=unit(2.5, "pt"),
-      plot.margin = unit(c(-15, 0, -15, -3.5), "mm"),
+      plot.margin = unit(c(-30, 0, -25, -3.5), "mm"),
       plot.title=element_text(margin=margin(rep(0, 4)))
     ) +
     labs(title = "", subtitle = NULL) +
@@ -203,6 +203,8 @@ interactive_chart <- function(gpath, fontname = 'Open Sans Condensed') {
 
 for (lang in colnames(txt)) {
   dd <- le
+  maxYear <- max(dd$year)
+  minYear <- min(dd$year)
   
   fontname <- txt["typeface.svg", lang] # font ggplot2 svg
   dd$country <- countryTranslation(as.character(dd$iso2c), lang)[,2]
@@ -210,50 +212,37 @@ for (lang in colnames(txt)) {
   
   dd$tooltip <- paste0("<b>", as.character(dd$country), "</b><br>",
               '<div><span style="font-size: 0.8em">',
-              txt["tooltip.le", lang], " ", dd$last, " ", txt["tooltip.2", lang], 
+              txt["h3", lang], " ", dd$last, " ", txt["tooltip.2", lang], 
               " ", maxYear, ", ",
               "+", dd$pc, "%  ", txt["tooltip.3", lang], " ", minYear, "</span></div>")
   
-  chart <- static_lineChart(dd, label.font = "Open Sans")
-}
-
-
-
-
-
-
-dd <- le
-xaxisPadding <- 11
-
-dd$country <- gsub("'", "_", dd$country)
-
-
-dd$tooltip <- paste0("<b>", as.character(dd$country), "</b><br>",
-              '<div><span style="font-size: 0.8em">',
-              "Life expectancy ", dd$last, " years in ", maxYear, ", ",
-              "+", dd$pc, "% since ", minYear, "</span></div>")
-
-
-
-
-footer <- paste0(
-  "source: ", htmlLink("http://data.worldbank.org/indicator/SP.DYN.LE00.IN", 
-  "World Bank"), " | made with R ", 
-  htmlLink("https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html", "ggiraph"), 
-  " & inspired by ", htmlLink("http://projects.flowingdata.com/life-expectancy/", 
-  "Nathan Yau's graphic"), " | swissinfo.ch | ", 
-  htmlLink("https://twitter.com/duc_qn", "@duc_qn"))
-
-save_html(
-  tags$html(
-    tags$head(includeHTML("styles.html")),
-    tags$body(    
-      h2("Life expectancy"),
-      div(class = "descr", HTML("In years, from 1960 until 2104. Each line is for a country or a region. Hover over a line to highlight a country.<br>Life expectancy at birth indicates the number of years a newborn infant would live if prevailing patterns of mortality at the time of its birth were to stay the same throughout its life.")),
-      div(class="graphic", igpath),
+  chart <- static_lineChart(dd, label.font = fontname)
+  ichart <- interactive_chart(chart, fontname = fontname)
+  
+  footer <- paste0(
+    txt['source', lang], ": ", htmlLink(txt['source.url', lang], txt['source.txt', lang]), " | ", txt['made.with', lang], 
+    htmlLink(txt['made.with.url', lang], txt['made.with.name', lang]), " & ", 
+    txt['inspired.by', lang], " ", htmlLink(txt['inspired.by.url', lang], 
+    txt['inspired.by.name', lang]), " | ", htmlLink("http://www.swissinfo.ch", "swissinfo.ch"),
+    " | ", htmlLink("https://twitter.com/duc_qn", "@duc_qn")
+  )
+  
+  save_html(
+    tags$html(
+     tags$head(includeHTML("styles.html")),
+      tags$body(    
+      h2(txt["main.title", lang]),
+      div(class = "descr", HTML(txt["subtitle1", lang])),
+      h3(txt["h3", lang]),
+      div(class="graphic", ichart),
+      div(id = "footer", HTML(txt["caption", lang])),
       div(id = "cite", HTML(footer)),
       HTML('<script type="text/javascript" src="https://www.swissinfo.ch/static/Themes/basic/js/vendor/iframeResizer.contentWindow.3.5.3.min.js"></script>')  
-    )), file = "lifeExpecancy_interactiveLine.html")  
+    )), file = paste0("02_lifeExpectancy_interactiveLine_", lang, ".html")
+  )
+  
+  
+}
 
 ```
 

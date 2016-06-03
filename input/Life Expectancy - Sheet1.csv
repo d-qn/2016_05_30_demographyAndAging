@@ -1,7 +1,8 @@
 code,EN,FR,DE,IT,PT,RU,ES,JA,ZH
-main.title,,Symphonie de lignes ascendantes et quelques vagues,,,,,,,
-subtitle1,,Espérance de vie en années de 1960 à 2014. Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,,,,
-subtitle2,,L'espérance de vie à la naissance indique la moyenne du nombre d'années qu'une personne peut espérer vivre si il ou elle naît à une année donnée et si le taux de mortalité reste constant dans l'avenir.,,,,,,,
+main.title,,Un flot de lignes ascendantes et quelques vagues...,,,,,,,
+subtitle1,,Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,,,,
+h3,,Espérance de vie,,,,,,,
+caption,,L'espérance de vie à la naissance indique la moyenne du nombre d'années qu'une personne peut espérer vivre si elle naît à une année donnée et si le taux de mortalité reste constant dans l'avenir.,,,,,,,
 source,Source,Source,Quelle,Fonte,fonte,Источник,Fuente,出典,来源
 source.txt,World Bank,Banque Mondiale,,,,,,,
 source.url,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN
@@ -11,7 +12,6 @@ made.with.url,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.
 inspired.by,inspired by ,inspiré par le graphique de,,,,,,,
 inspired.by.name,Nathan Yau's graphic,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau
 inspired.by.url,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/
-tooltip.le,Life expectancy,Espérance de vie,,,,,,,
-tooltip.2,years in ,année en,,,,,,,
+tooltip.2,years in ,ans en,,,,,,,
 tooltip.3,since,depuis,,,,,,,
 typeface.svg,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Yuanti TC,Yuanti TC
