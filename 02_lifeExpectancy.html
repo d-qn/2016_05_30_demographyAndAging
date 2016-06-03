@@ -68,21 +68,19 @@ img {
 
 
 <pre class="r"><code>#### A) Using WB
-indicators &lt;- structure(c('SP.DYN.LE00.IN', 'SP.DYN.TFRT.IN'), names = c('lifeExpectancy', 'fertilityRate'))
 
 if(getData) {
-    data.dl &lt;- sapply(1:length(indicators), function(i) {
-        wbdat &lt;- WDI(indicator = indicators[i],
-          start = 1950,  end = 2016, extra = TRUE, cache = NULL)
-        colnames(wbdat)[3] &lt;- 'value'
-        wbdat$indicator &lt;- names(indicators)[i]
-        wbdat
-    }, simplify = FALSE)
-    
-    data.dl &lt;- do.call(rbind, data.dl)
-    data.dl$indicator &lt;- factor(data.dl$indicator)
+  data.dl &lt;- WDI(
+    indicator = 'SP.DYN.LE00.IN',
+    start = 1950,  
+    end = 2016, 
+    extra = TRUE, 
+    cache = NULL
+  )
+  colnames(data.dl)[3] &lt;- 'value'
+
   data &lt;- data.dl %&gt;% select(-capital, -longitude, -latitude, -lending)
-    write.csv(data.dl.sub, file = data.file, row.names = F)
+    write.csv(data, file = data.file, row.names = F)
 } else {
   data &lt;- read.csv( file = data.file )
 }
@@ -118,7 +116,6 @@ library(swiRcharts)</code></pre>
 ## Loading required package: sunburstR</code></pre>
 <pre class="r"><code>library(ggiraph)
 library(swiMap)
-library(htmltools)
 
 strokeWidth &lt;- 0.3
 
@@ -134,7 +131,7 @@ iso2.todiscard.manualPicked &lt;- c(
   &quot;EC&quot;
   )
 
-le &lt;- data %&gt;% filter(indicator ==  names(indicators)[1]) %&gt;% arrange(year)
+le &lt;- data %&gt;% arrange(year)
 
 # get the main regions iso2
 regions.all &lt;- unique( le[!is.na(le$region) &amp; (le$region == &quot;Aggregates&quot;) ,&quot;country&quot;])
@@ -285,8 +282,6 @@ interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
       HTML('&lt;script type=&quot;text/javascript&quot; src=&quot;https://www.swissinfo.ch/static/Themes/basic/js/vendor/iframeResizer.contentWindow.3.5.3.min.js&quot;&gt;&lt;/script&gt;')  
     )), file = paste0(&quot;02_lifeExpectancy_interactiveLine_&quot;, lang, &quot;.html&quot;)
   )
-  
-  
 }</code></pre>
 <pre><code>## Warning: package 'gdtools' was built under R version 3.2.3</code></pre>
 </div>
