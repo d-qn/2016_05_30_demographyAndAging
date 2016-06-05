@@ -148,7 +148,7 @@ fr <- fr %>% group_by(iso2c, country, iso3c) %>%
 static_lineChart <- function(
   data, 
   xaxisPadding = 14, 
-  label.font = "Open Sans Condensed Light",
+  label.font = "Open Sans Condensed",
   hbox = 2.1
   ) {
   
@@ -160,7 +160,7 @@ static_lineChart <- function(
     scale_x_continuous(breaks = seq(minYear, maxYear, 6), 
       expand = c(0, 0), name = "",
       limits = c(minYear, max = maxYear + xaxisPadding)) +
-    scale_y_continuous(limits = c(min(data$value), max(data$value))) + 
+    scale_y_continuous(limits = c(min(data$value), max(data$value)), expand = c(0, 0.05)) + 
     ylab("") + 
     coord_fixed(ratio = 8)
 
@@ -169,14 +169,14 @@ static_lineChart <- function(
         geom_rect(
           data = data.frame(xmin = minYear, xmax = maxYear,
           ymin = min(data$value), ymax = hbox),
-          aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "#ab3d3f", alpha = 0.2)
+          aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "#ab3d3f", alpha = 0.09)
     }
   
     gp + geom_path_interactive(
       aes(x = year, y = value, group = country, tooltip = tooltip, 
           data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
     scale_size_manual(values = c(strokeWidth, strokeWidth * 2.5,  strokeWidth * 6), guide=FALSE) +
-    scale_alpha_manual(values = c(0.28, 0.7), guide=FALSE) +
+    scale_alpha_manual(values = c(0.3, 0.7), guide=FALSE) +
     scale_color_manual(values = c("darkgrey", swi_rpal), guide=FALSE) +
     scale_fill_manual(values =  c("darkgrey", swi_rpal), guide=FALSE) +
     theme(
@@ -198,7 +198,7 @@ static_lineChart <- function(
 
 }
 
-interactive_chart <- function(gpath, fontname = 'Open Sans Condensed Light') {
+interactive_chart <- function(gpath, fontname = 'Open Sans Condensed') {
   ggiraph(
     code = {print(gpath)},
     hover_css = "stroke-opacity:0.99;stroke-width:2px;stroke:black;",
