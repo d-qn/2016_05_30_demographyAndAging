@@ -216,7 +216,7 @@ fr &lt;- fr %&gt;% group_by(iso2c, country, iso3c) %&gt;%
       limits = c(minYear, max = maxYear + xaxisPadding)) +
     scale_y_continuous(limits = c(min(data$value), max(data$value)), expand = c(0, 0.05)) + 
     ylab(&quot;&quot;) + 
-    coord_fixed(ratio = 8)
+    coord_fixed(ratio = 7)
 
     if(!is.null(hbox)) {
       gp &lt;- gp +
@@ -255,12 +255,13 @@ fr &lt;- fr %&gt;% group_by(iso2c, country, iso3c) %&gt;%
 interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
   ggiraph(
     code = {print(gpath)},
-    hover_css = &quot;stroke-opacity:0.99;stroke-width:2px;stroke:black;&quot;,
+    hover_css = &quot;stroke-opacity:0.99;stroke-width:1.4px;stroke:black;&quot;,
     tooltip_opacity = 0.7,
+    tooltip_offy = 20,
     pointsize = 15,
     width = &quot;100%&quot;,
-    #height = &quot;500px&quot;,
-    height_svg = 7.4,
+    height = &quot;100%&quot;,
+    height_svg = 7,
     width_svg = 7,
     fontname_sans = fontname,
     fontname_serif = fontname

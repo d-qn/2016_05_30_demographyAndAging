@@ -200,8 +200,27 @@ le$color &lt;- as.factor(le$color)
 le &lt;- le %&gt;% group_by(iso2c, country, iso3c) %&gt;% 
   dplyr::mutate(delta = round(last(value) - first(value), 1)) %&gt;%
   dplyr::mutate(pc = round(((last(value) - first(value)) / first(value)) * 100)) %&gt;% 
-  dplyr::mutate(last = round(last(value))) %&gt;% 
-  ungroup()</code></pre>
+  dplyr::mutate(last = round(last(value), 1)) %&gt;% 
+  ungroup()
+
+le %&gt;% filter(country == &quot;World&quot;)</code></pre>
+<pre><code>## Source: local data frame [55 x 13]
+## 
+##     iso2c country    value  year  iso3c     region     income strokeWidth
+##    (fctr)   (chr)    (dbl) (int) (fctr)     (fctr)     (fctr)      (fctr)
+## 1      1W   World 52.47528  1960    WLD Aggregates Aggregates           C
+## 2      1W   World 52.98137  1961    WLD Aggregates Aggregates           C
+## 3      1W   World 53.40489  1962    WLD Aggregates Aggregates           C
+## 4      1W   World 53.93638  1963    WLD Aggregates Aggregates           C
+## 5      1W   World 54.61405  1964    WLD Aggregates Aggregates           C
+## 6      1W   World 55.28166  1965    WLD Aggregates Aggregates           C
+## 7      1W   World 56.02127  1966    WLD Aggregates Aggregates           C
+## 8      1W   World 56.73455  1967    WLD Aggregates Aggregates           C
+## 9      1W   World 57.34154  1968    WLD Aggregates Aggregates           C
+## 10     1W   World 57.95718  1969    WLD Aggregates Aggregates           C
+## ..    ...     ...      ...   ...    ...        ...        ...         ...
+## Variables not shown: alpha (fctr), color (fctr), delta (dbl), pc (dbl),
+##   last (dbl)</code></pre>
 <pre class="r"><code>static_lineChart &lt;- function(data, xaxisPadding = 14, label.font = &quot;Open Sans Condensed&quot;) {
   
   maxYear &lt;- max(data$year)
@@ -212,7 +231,7 @@ le &lt;- le %&gt;% group_by(iso2c, country, iso3c) %&gt;%
     scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = &quot;&quot;,
                        limits = c(minYear, max = maxYear + xaxisPadding)) +
     ylab(&quot;&quot;) + 
-    coord_fixed(ratio = 1) + 
+    coord_fixed(ratio = 0.8) + 
     geom_path_interactive(
       aes(x = year, y = value, group = country, tooltip = tooltip, 
           data_id = dd$country, size = strokeWidth, alpha = alpha, colour = color)) + 
@@ -241,12 +260,12 @@ le &lt;- le %&gt;% group_by(iso2c, country, iso3c) %&gt;%
 interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
  ggiraph(
   code = {print(gpath)},
-  hover_css = &quot;stroke-opacity:0.98;stroke-width:2.2px;stroke:black;&quot;,
+  hover_css = &quot;stroke-opacity:0.99;stroke-width:1.5px;stroke:black;&quot;,
   tooltip_opacity = 0.7,
   pointsize = 15,
   width = &quot;100%&quot;,
   height = &quot;100%&quot;,
-  height_svg = 7.1,
+  height_svg = 7,
   width_svg = 7,
   fontname_sans = fontname,
   fontname_serif = fontname

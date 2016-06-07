@@ -162,7 +162,7 @@ static_lineChart <- function(
       limits = c(minYear, max = maxYear + xaxisPadding)) +
     scale_y_continuous(limits = c(min(data$value), max(data$value)), expand = c(0, 0.05)) + 
     ylab("") + 
-    coord_fixed(ratio = 8)
+    coord_fixed(ratio = 7)
 
     if(!is.null(hbox)) {
       gp <- gp +
@@ -201,12 +201,13 @@ static_lineChart <- function(
 interactive_chart <- function(gpath, fontname = 'Open Sans Condensed') {
   ggiraph(
     code = {print(gpath)},
-    hover_css = "stroke-opacity:0.99;stroke-width:2px;stroke:black;",
+    hover_css = "stroke-opacity:0.99;stroke-width:1.4px;stroke:black;",
     tooltip_opacity = 0.7,
+    tooltip_offy = 20,
     pointsize = 15,
     width = "100%",
-    #height = "500px",
-    height_svg = 7.4,
+    height = "100%",
+    height_svg = 7,
     width_svg = 7,
     fontname_sans = fontname,
     fontname_serif = fontname

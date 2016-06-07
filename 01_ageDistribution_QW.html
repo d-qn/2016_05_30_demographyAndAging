@@ -76,8 +76,8 @@ img {
 </div>
 <div id="load-data" class="section level2">
 <h2>Load data</h2>
-<pre><code>## Warning: EN  DE  IT  RU  ES  JA  ZH languages will be discarded!</code></pre>
-<pre><code>## [1] &quot;FR&quot; &quot;PT&quot;</code></pre>
+<pre><code>## Warning: RU  ES languages will be discarded!</code></pre>
+<pre><code>## [1] &quot;EN&quot; &quot;FR&quot; &quot;DE&quot; &quot;IT&quot; &quot;PT&quot; &quot;JA&quot; &quot;ZH&quot;</code></pre>
 <pre class="r"><code>xlabel &lt;- rep('', length(unique(data$age)))
 idx.x &lt;- c(seq(1, length(unique(data$age)), 10), length(unique(data$age)))
 xlabel[idx.x] &lt;- unique(data$age)[idx.x]
@@ -125,15 +125,17 @@ plotayear &lt;- function(
       alpha = 0.35, size = 70,  color = &quot;#d4c3aa&quot;, hjust = 1) +
    labs(title=title, subtitle = subtitle, caption=caption) 
   
-  print(plot)
+  plot
 }
 
 
-sapply(colnames(txt), function(lang) {
+langs &lt;- colnames(txt)[!colnames(txt) %in% languagesToDiscard]
+
+sapply(langs, function(lang) {
   saveGIF({
     for(y in c(unique(data$year), rep(max(data$year), 4))) {
-      invisible(
-        plotayear(
+
+        p &lt;- plotayear(
           data, 
           y, 
           title = txt[&quot;main.title&quot;, lang], 
@@ -143,13 +145,19 @@ sapply(colnames(txt), function(lang) {
           font.title = txt[&quot;font.title&quot;, lang], 
           font.txt = txt[&quot;font.txt&quot;, lang]
           )
-        )
+        
+        if(lang %in% c('ZH', 'JA')) {
+          print(p + theme(plot.subtitle = element_text(family = txt[&quot;font.title&quot;, lang], size = 13), plot.title = element_text(size = 20)))
+        } else {
+          print(p)
+        }
+    
     }
   }, movie.name = paste0(&quot;swissPopulationAge_&quot;, lang, &quot;.gif&quot;), interval = 0.2, 
   ani.width = 640, ani.height = 770, loop = TRUE)
 })</code></pre>
-<pre><code>##   FR   PT 
-## TRUE TRUE</code></pre>
+<pre><code>##   DE 
+## TRUE</code></pre>
 </div>
 </div>
 

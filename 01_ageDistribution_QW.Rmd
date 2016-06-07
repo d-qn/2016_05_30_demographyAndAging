@@ -22,6 +22,9 @@ library(dplyr)
 library(tidyr)
 library(swiTheme)
 library(animation)
+
+languagesToDiscard <- c('EN', 'FR', 'PT', 'JA', 'IT', 'ZH')
+
 ```
 
 ## Load data
@@ -120,15 +123,17 @@ plotayear <- function(
       alpha = 0.35, size = 70,  color = "#d4c3aa", hjust = 1) +
    labs(title=title, subtitle = subtitle, caption=caption) 
   
-  print(plot)
+  plot
 }
 
 
-sapply(colnames(txt), function(lang) {
+langs <- colnames(txt)[!colnames(txt) %in% languagesToDiscard]
+
+sapply(langs, function(lang) {
   saveGIF({
     for(y in c(unique(data$year), rep(max(data$year), 4))) {
-      invisible(
-        plotayear(
+
+        p <- plotayear(
           data, 
           y, 
           title = txt["main.title", lang], 
@@ -138,7 +143,13 @@ sapply(colnames(txt), function(lang) {
           font.title = txt["font.title", lang], 
           font.txt = txt["font.txt", lang]
           )
-        )
+        
+        if(lang %in% c('ZH', 'JA')) {
+          print(p + theme(plot.subtitle = element_text(family = txt["font.title", lang], size = 13), plot.title = element_text(size = 20)))
+        } else {
+          print(p)
+        }
+    
     }
   }, movie.name = paste0("swissPopulationAge_", lang, ".gif"), interval = 0.2, 
   ani.width = 640, ani.height = 770, loop = TRUE)
