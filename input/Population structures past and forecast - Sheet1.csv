@@ -1,15 +1,15 @@
 code,EN,FR,DE,IT,PT,RU,ES,JA,ZH
-main.title,"Share of population by age for selected countries, 1990-2050",Evolution de la pyramide des âges entre 1990 et 2050,,"Evoluzione della percentuale della popolazione secondo l'età, 1990-2050",Evolução da estrutura etária entre 1990 e 2050,"Демографическая возрастная структура населения некоторых стран и перспективы ее эволюции, 1990-2050","La pirámide de edades entre 1990 y 2050, evolución y previsión futura",,1990-2050年，各国人口年龄比例变化。
-source.txt,Source: US Census Bureau IDB; idbr R package | swissinfo.ch,Source: US Census Bureau IDB; idbr R package | swissinfo.ch,,"Fonti: Ufficio del censimento degli Stati Uniti, idbr R package | swissinfo.ch",Fonte: US Census Bureau BID; idbr R package | swissinfo.ch,Источник: US Census Bureau IDB; idbr R package | swissinfo.ch,"Fuente: Censo de EE.UU IDB, idrb R package  | swissinfo.ch",,来源：美国人口普查局IDB，idbr R package | 瑞士资讯swissinfo.ch
-male,male,Hommes,,Uomini,Homens,Мужчины,Hombres,,男
-female,female,Femmes,,Donne,Mulheres,Женщины,Mujeres,,女
-age,AGE,AGE,,Età,IDADE,ВОЗРАСТ,EDAD,,年龄
-FR,France,France,,Francia,França,Франция,Francia,,法国
-SZ,Switzerland,Suisse,,Svizzera,Suíça,Швейцария,Suiza,,瑞士
-JA,Japan,Japon,,Giappone,Japão,Япония,Japón,,日本
-CH,China,Chine,,Cina,China,Китай,China,,中国
-US,United States,Etats-Unis,,Stati Uniti,Estados Unidos,США,EE.UU.,,美国
-BR,Brazil,Brésil,,Brasile,Brasil,Бразилия,Brasil,,巴西
-RS,Russia,Russie,,Russia,Rússia,Россия,Rusia,,俄罗斯
-MO,Morocco,Maroc,,Marocco,Marrocos,Марокко,Marruecos,,摩洛哥
+main.title,"Share of population by age for selected countries, 1990-2050",Evolution de la pyramide des âges entre 1990 et 2050,Entwicklung Alterspyramide zwischen 1990 und 2050,"Evoluzione della percentuale della popolazione secondo l'età, 1990-2050",Evolução da estrutura etária entre 1990 e 2050,"Демографическая возрастная структура населения некоторых стран и перспективы ее эволюции, 1990-2050","La pirámide de edades entre 1990 y 2050, evolución y previsión futura",,1990-2050年，各国人口年龄比例变化。
+source.txt,Source: US Census Bureau IDB; idbr R package | swissinfo.ch,Source: US Census Bureau IDB; idbr R package | swissinfo.ch,Quelle: US Census Bureau IDB; idbr R package | swissinfo.ch,"Fonti: Ufficio del censimento degli Stati Uniti, idbr R package | swissinfo.ch",Fonte: US Census Bureau BID; idbr R package | swissinfo.ch,Источник: US Census Bureau IDB; idbr R package | swissinfo.ch,"Fuente: Censo de EE.UU IDB, idrb R package  | swissinfo.ch",,来源：美国人口普查局IDB，idbr R package | 瑞士资讯swissinfo.ch
+male,male,Hommes,Männer,Uomini,Homens,Мужчины,Hombres,,男
+female,female,Femmes,Frauen,Donne,Mulheres,Женщины,Mujeres,,女
+age,AGE,AGE,Alter,Età,IDADE,ВОЗРАСТ,EDAD,,年龄
+FR,France,France,Frrankreich,Francia,França,Франция,Francia,,法国
+SZ,Switzerland,Suisse,Schweiz,Svizzera,Suíça,Швейцария,Suiza,,瑞士
+JA,Japan,Japon,Japan,Giappone,Japão,Япония,Japón,,日本
+CH,China,Chine,China,Cina,China,Китай,China,,中国
+US,United States,Etats-Unis,USA,Stati Uniti,Estados Unidos,США,EE.UU.,,美国
+BR,Brazil,Brésil,Brasilien,Brasile,Brasil,Бразилия,Brasil,,巴西
+RS,Russia,Russie,Russland,Russia,Rússia,Россия,Rusia,,俄罗斯
+MO,Morocco,Maroc,Marokko,Marocco,Marrocos,Марокко,Marruecos,,摩洛哥
 font,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,OpenSans-CondensedLight,Yuanti TC,Yuanti TC
