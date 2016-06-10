@@ -23,7 +23,7 @@ library(tidyr)
 library(swiTheme)
 library(animation)
 
-languagesToDiscard <- c('EN', 'FR', 'PT', 'JA', 'IT', 'ZH')
+languagesToDiscard <- c('EN', 'FR', 'PT', 'JA', 'IT', 'ZH', 'DE')
 
 ```
 

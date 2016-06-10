@@ -81,7 +81,7 @@ library(swiMap)
 strokeWidth <- 0.3
 
 swi_iso2 <- c("CH", "CN", "RU", "BR", "IN", "JP", "EU", "ZQ", "ZG", "XU", "Z4")
-countries.iso2 <- c(swi_iso2, c('RW', 'SL', 'KH'))
+countries.iso2 <- c(swi_iso2, c('SY', 'RW', 'SL', 'KH'))
 
 iso2.todiscard.manualPicked <- c(
   "AG", "AW", "BB", "BN", "BS", "DJ", "FM", "GD", 
@@ -89,7 +89,7 @@ iso2.todiscard.manualPicked <- c(
   "KI", "BZ", "LC", "PG", "WS", "VU", "UZ", "TJ", 
   "TM", "TT", "TO", "TG", "SZ", "SK", "SI", "MU",
   "MR", "MG", "MD", "LS", "AZ", "DO", "GU", "ME",
-  "EC"
+  "EC", "NZ", "NC"
   )
 
 le <- data %>% arrange(year)

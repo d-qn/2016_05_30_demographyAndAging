@@ -1,5 +1,5 @@
 code,EN,FR,DE,IT,PT,RU,ES,JA,ZH
-main.title,,La chute...,,,,,,,
+main.title,,"Faites l'amour, pas la guerre",,,,,,,
 subtitle1,,Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,,,,
 h3,,Taux de fécondité,,,,,,,
 caption,,"Le taux de fécondité (ou nombre moyen d'enfants par femme) de 2,1 est le seuil de rénouvellement des générations, c'est à dire le nombre moyen d'enfants par femme nécessaire pour que chaque génération en engendre une suivante du même effectif. Sous ce seuil (en rose) et sans flux migratoire, la population d'un pays diminuerait à terme. ",,,,,,,
@@ -11,4 +11,4 @@ made.with.name,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R 
 made.with.url,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html
 tooltip.2,,enfants par femme en,,,,,,,
 tooltip.3,,depuis,,,,,,,
-typeface.svg,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Yuanti TC,Yuanti TC
+typeface.svg,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed
