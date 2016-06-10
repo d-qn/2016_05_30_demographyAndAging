@@ -28,6 +28,9 @@ library(swiTheme)
   data %<>% group_by(Nationalité) %>% mutate (yearly = sum(value)) %>% ungroup()
   data$prop <- data$value / data$yearly
 
+  # compute the density function <= 
+  data %<>% group_by(Nationalité) %>% mutate(valEqOrLess = cumsum(value)) %>% ungroup()
+  data$probEqOrLess <- data$valEqOrLess / data$yearly
 
 ```
 
@@ -43,8 +46,62 @@ gp <- ggplot(data = data, aes(age, prop)) +
 png("ageDistrib_byNat.png", width = 1200, height = 1000)
 gp
 dev.off()
+```
 
-ggplot(data = data, aes(age, value)) + 
-  geom_area(aes(fill = Nationalité), position = "stack", alpha = 1) + swi_theme()
 
+## Chart the area chart
+
+```{r area chart}
+library(swiRcharts)
+
+chartHeight <- 450
+lang <- 'FR'
+data$prop <- data$prop * 100
+data$probEqOrLess <- data$probEqOrLess * 100
+
+ a <- Highcharts$new()
+  a$chart(type = 'area', height = chartHeight, spacing = c(4, 0, 8, 0))
+  hSeries <- hSeries2(data.frame(
+    x = data$age,
+    y = data$prop,
+    probEqOrLess = data$probEqOrLess,
+    series = data$Nationalité), "series")
+  a$series(hSeries)
+  
+  a$colors(c("#336666", "#663333"))
+  a$plotOptions(area = list(stacking = NULL,
+    lineWidth = 0.5, marker = list(enabled = FALSE, symbol = "circle", radius = 1)),
+    series = list(fillOpacity = 0.5, trackByArea = TRUE))
+  
+  a$xAxis(title = list(text = ""), crosshair = TRUE, 
+    reversed = ifelse(lang == "AR", TRUE, FALSE ))
+
+  a$lang(thousandsSep = " ")
+  a$yAxis(title = list(text = ""),
+    from = 0,
+    gridLineColor = "#EFEFEF",
+    labels = list(formatter = "#! function () {return (this.value) + ' %';} !#", x = -3),
+    opposite = ifelse(lang == 'AR', TRUE, FALSE))
+  
+  a$tooltip(
+    shared =  T, followPointer = T, useHTML = T,
+    borderWidth = 1, style = list(padding = 2),
+    headerFormat =  'Age: <larger><b>{point.key}</larger></b> ans<table>',        
+    pointFormat = '<tr><td style="color: {series.color}">{series.name}: </td> <td style="text-align: right"><b>{point.probEqOrLess: .1f}</b>% ont cet âge ou moins</td></tr>')
+  a
+  
+  hChart.html <- tempfile("hChart_area")
+  a$save(hChart.html)
+  
+  # Convert highcharts-rCharts html chart into a responsive one
+  hChart2responsiveHTML(hChart.html, output.html = "04_avs_budget_sansReforme2020_FR.html",
+    h2 = "Budget de l'AVS", descr = "En milliards CHF, prévisions sans réforme de la prévoyance viellesse",
+    #h2 = txt['main.title',lang], descr = txt['descr',lang],
+    # source = paste0(txt["source",lang], ": ",
+    #   htmlLink(txt["source.link",lang],
+    #   txt["source.name",lang])),
+    h3 = "",
+    author = htmlLink("http://www.swissinfo.ch", "swissinfo.ch"))
+  
+  
 ```
