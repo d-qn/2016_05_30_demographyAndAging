@@ -1,0 +1,50 @@
+---
+title: "05_ageDistribution_byNationality"
+author: "Duc-Quang Nguyen"
+date: "10 June 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(magrittr)
+library(dplyr)
+library(tidyr)
+library(swiTheme)
+```
+
+## Load data
+```{r dataload}
+  data.read <- read.csv2("input/px-x-0102010000_101.csv", stringsAsFactors = F, check.names = F, skip = 1, encoding = "latin1")
+
+  # drop some columns
+  data <- data.read %>% select (-`Canton (-) / District (>>) / Commune (......)`, -`Type de population`, -`Sexe`, -`Année`)
+
+  # make data long
+  data <- data %>% gather(age, value, -Nationalité)
+  # remove "ans" from the age and convert to numeric
+  data$age <- as.numeric(gsub(" an.*$", "", data$age))
+  
+  # 
+  data %<>% group_by(Nationalité) %>% mutate (yearly = sum(value)) %>% ungroup()
+  data$prop <- data$value / data$yearly
+
+
+```
+
+## Plot
+```{r plot}
+
+gp <- ggplot(data = data, aes(age, prop)) + 
+  scale_y_continuous(labels = scales::percent) +
+  geom_area(aes(fill = Nationalité), position = "identity", alpha = 0.6) + 
+  swi_theme(base_size = 30) + scale_fill_manual(values = swi_rpal) +
+  labs(title = "L'âge de la population en Suisse par nationalité",
+    subtitle = "En 2014")
+png("ageDistrib_byNat.png", width = 1200, height = 1000)
+gp
+dev.off()
+
+ggplot(data = data, aes(age, value)) + 
+  geom_area(aes(fill = Nationalité), position = "stack", alpha = 1) + swi_theme()
+
+```
