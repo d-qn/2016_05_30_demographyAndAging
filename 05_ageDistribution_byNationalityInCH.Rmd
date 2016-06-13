@@ -32,6 +32,15 @@ library(swiTheme)
   data %<>% group_by(Nationalité) %>% mutate(valEqOrLess = cumsum(value)) %>% ungroup()
   data$probEqOrLess <- data$valEqOrLess / data$yearly
 
+  
+  txt <- read.csv("input/Budget AVS area chart - Sheet1.csv", row.names = 1, stringsAsFactors = F)
+  # discard incomplete translations
+  cidx <- unique(which(txt =="" | is.na(txt), T)[,2])
+  if(length(cidx > 0)) {
+    warning(paste(colnames(txt)[cidx], collapse = "\t"), " languages will be discarded!", "\n")
+    txt <- txt[,-cidx, drop = F]
+  }
+  colnames(txt)
 ```
 
 ## Plot
@@ -43,9 +52,9 @@ gp <- ggplot(data = data, aes(age, prop)) +
   swi_theme(base_size = 30) + scale_fill_manual(values = swi_rpal) +
   labs(title = "L'âge de la population en Suisse par nationalité",
     subtitle = "En 2014")
-png("ageDistrib_byNat.png", width = 1200, height = 1000)
+#png("ageDistrib_byNat.png", width = 1200, height = 1000)
 gp
-dev.off()
+#dev.off()
 ```
 
 
@@ -86,8 +95,8 @@ data$probEqOrLess <- data$probEqOrLess * 100
   a$tooltip(
     shared =  T, followPointer = T, useHTML = T,
     borderWidth = 1, style = list(padding = 2),
-    headerFormat =  'Age: <larger><b>{point.key}</larger></b> ans<table>',        
-    pointFormat = '<tr><td style="color: {series.color}">{series.name}: </td> <td style="text-align: right"><b>{point.probEqOrLess: .1f}</b>% ont cet âge ou moins</td></tr>')
+    headerFormat =  '<larger><strong>{point.key}</larger></strong> ans<table>',        
+    pointFormat = '<tr><td style="color: {series.color}">{series.name}: </td> <td style="text-align: right"><b>{point.y: .1f}</b>%</td><td>({point.probEqOrLess: .1f}% ont cet âge ou moins)</td></tr>')
   a
   
   hChart.html <- tempfile("hChart_area")
