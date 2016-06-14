@@ -227,14 +227,31 @@ for (lang in colnames(txt)) {
   dd$country <- countryTranslation(as.character(dd$iso2c), lang)[,2]
   dd$country <- gsub("'", "_", dd$country)
   
-  dd$tooltip <- paste0("<b>", as.character(dd$country), "</b><br>",
-              '<div><span style="font-size: 0.8em">',
-              dd$last, " ", txt["tooltip.2", lang], 
-              " ", maxYear, ", ",
-              ifelse(dd$pc > 0, "+", ""), dd$pc, "% ", 
-              txt["tooltip.3", lang], " ", minYear, "</span></div>")
-  
-  chart <- static_lineChart(dd, label.font = fontname)
+  if(lang == "JA") {
+  dd$tooltip <- paste0(
+    "<b>", as.character(dd$country), "</b><br>",
+    '<div><span style="font-size: 0.8em">',
+    maxYear, " ", txt["tooltip.2", lang], " ",
+    dd$last, ", ", minYear, " ", txt["tooltip.3", lang], " ",
+    ifelse(dd$pc > 0, "+", ""), dd$pc, "%",
+    "</span></div>"
+  )
+  } else {
+  dd$tooltip <- paste0(
+    "<b>", as.character(dd$country), "</b><br>",
+    '<div><span style="font-size: 0.8em">',
+    dd$last, " ", txt["tooltip.2", lang], 
+    " ", maxYear, ", ",
+    ifelse(dd$pc > 0, "+", ""), dd$pc, "% ", 
+    txt["tooltip.3", lang], " ", minYear, "</span></div>"
+    )    
+  }
+
+  chart <- static_lineChart(
+    dd, 
+    xaxisPadding = as.numeric(txt['xpadding', lang]), 
+    label.font = fontname
+  )
   ichart <- interactive_chart(chart, fontname = fontname)
   
   footer <- paste0(

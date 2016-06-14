@@ -1,14 +1,15 @@
 code,EN,FR,DE,IT,PT,RU,ES,JA,ZH
-main.title,,"Faites l'amour, pas la guerre",,,,,,,
-subtitle1,,Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,,,,
-h3,,Taux de fécondité,,,,,,,
-caption,,"Le taux de fécondité (ou nombre moyen d'enfants par femme) de 2,1 est le seuil de rénouvellement des générations, c'est à dire le nombre moyen d'enfants par femme nécessaire pour que chaque génération en engendre une suivante du même effectif. Sous ce seuil (en rose) et sans flux migratoire, la population d'un pays diminuerait à terme. ",,,,,,,
+main.title,"Make love, not war","Faites l'amour, pas la guerre",,,,"Занимайтесь любовью, а не войной",,殺し合うのでなく愛し合おう,要做爱不要作战
+subtitle1,Each line corresponds to a country or a world region. Move the cursor over a line for more details.,Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,"Каждая линия соответствует стране или региону мира. Переведите курсор на лини, чтобы узнать более подробную информацию.",,それぞれの線上にカーソルを合わせると、国や地域ごとに平均寿命の詳細が見られます。,每条线对应一个国家或地区。将鼠标移动至线条上，便可获取相应信息。
+h3,Fertility rate,Taux de fécondité,,,,Уровень рождаемости,,出生率,
+caption,"The fertility rate (number of children per women) of 2.1 is needed to sustain a population and the workforce. Below this threshold (shown in pink) and without migration flows, a country's population would decrease over time.","Le taux de fécondité (ou nombre moyen d'enfants par femme) de 2,1 est le seuil de renouvellement des générations, c'est à dire le nombre moyen d'enfants par femme nécessaire pour que chaque génération en engendre une suivante du même effectif. Sous ce seuil (en rose) et sans flux migratoire, la population d'un pays diminuerait à terme. ",,,,"Уровень рождаемости (или среднее число детей у женщины) в размере 2,1 - это минимальное условие простого воспроизведения населения. Попадание показателей в пространство, отмеченное розовым, означает, что без миграционного притока население этой страны с течением времени будет только уменьшаться.",,人口を維持するのに必要な合計特殊出生率（１人の女性が生涯に何人の子どもを産むかを表す数字）は２．１。２．１以下（ピンクの部分）では、移民の大量流入がなければ、将来的にその国の人口は減少する。,对一个国家来说，生育率(女性一生的平均子女数量)至少要达到2.1，才能完成维持人口的正常更替。换句话说，平均子女数量达到2.1，才能够满足人数相当的世代更替。如果生育率低于这一数量，又没有移民的迁入，那一个国家的人口就会随着时间减少殆尽。 
 source,Source,Source,Quelle,Fonte,fonte,Источник,Fuente,出典,来源
-source.txt,World Bank,Banque Mondiale,,,,,,,
+source.txt,World Bank,Banque Mondiale,,,,Всемирный банк,,世界銀行,世界银行
 source.url,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/,http://data.worldbank.org/indicator/SP.DYN.TFRT.IN/
-made.with,made with ,réalisé avec ,,,,,,,
+made.with,made with ,réalisé avec ,,,,,,作成,制作
 made.with.name,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph 
 made.with.url,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html
-tooltip.2,,enfants par femme en,,,,,,,
-tooltip.3,,depuis,,,,,,,
+tooltip.2,children per woman in,enfants par femme en,,,,,,年の出生率,个婴儿，平均每个妇女于
+tooltip.3,since,depuis,,,,,,年比で,自从
 typeface.svg,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed
+xpadding,11,14,14,14,14,14,14,14,14
