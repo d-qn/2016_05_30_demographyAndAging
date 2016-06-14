@@ -100,9 +100,9 @@ if(length(cidx &gt; 0)) {
   warning(paste(colnames(txt)[cidx], collapse = &quot;\t&quot;), &quot; languages will be discarded!&quot;, &quot;\n&quot;)
   txt &lt;- txt[,-cidx, drop = F]
 }</code></pre>
-<pre><code>## Warning: EN  DE  IT  PT  RU  ES  JA  ZH languages will be discarded!</code></pre>
+<pre><code>## Warning: EN  FR  DE  IT  PT  RU  ES  ZH languages will be discarded!</code></pre>
 <pre class="r"><code>colnames(txt)</code></pre>
-<pre><code>## [1] &quot;FR&quot;</code></pre>
+<pre><code>## [1] &quot;JA&quot;</code></pre>
 </div>
 <div id="life-expectancy" class="section level2">
 <h2>Life expectancy</h2>
@@ -280,13 +280,28 @@ interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
   dd$country &lt;- countryTranslation(as.character(dd$iso2c), lang)[,2]
   dd$country &lt;- gsub(&quot;'&quot;, &quot;_&quot;, dd$country)
   
-  dd$tooltip &lt;- paste0(&quot;&lt;b&gt;&quot;, as.character(dd$country), &quot;&lt;/b&gt;&lt;br&gt;&quot;,
-              '&lt;div&gt;&lt;span style=&quot;font-size: 0.8em&quot;&gt;',
-              txt[&quot;h3&quot;, lang], &quot; &quot;, dd$last, &quot; &quot;, txt[&quot;tooltip.2&quot;, lang], 
-              &quot; &quot;, maxYear, &quot;, &quot;,
-              &quot;+&quot;, dd$pc, &quot;% &quot;, txt[&quot;tooltip.3&quot;, lang], &quot; &quot;, minYear, &quot;&lt;/span&gt;&lt;/div&gt;&quot;)
+  if(lang == &quot;JA&quot;) {
+  dd$tooltip &lt;- paste0(
+    &quot;&lt;b&gt;&quot;, as.character(dd$country), &quot;&lt;/b&gt;&lt;br&gt;&quot;,
+    '&lt;div&gt;&lt;span style=&quot;font-size: 0.8em&quot;&gt;',
+    maxYear, &quot; &quot;, txt[&quot;tooltip.1&quot;, lang], &quot; &quot;, dd$last,
+    txt[&quot;tooltip.2&quot;, lang], &quot;, &quot;, minYear, &quot; &quot;,
+    txt[&quot;tooltip.3&quot;, lang], &quot; +&quot;, dd$pc, &quot;%&quot;,
+    &quot;&lt;/span&gt;&lt;/div&gt;&quot;
+    )
+  } else {
+  dd$tooltip &lt;- paste0(
+    &quot;&lt;b&gt;&quot;, as.character(dd$country), &quot;&lt;/b&gt;&lt;br&gt;&quot;,
+    '&lt;div&gt;&lt;span style=&quot;font-size: 0.8em&quot;&gt;',
+    txt[&quot;h3&quot;, lang], &quot; &quot;, dd$last, &quot; &quot;, txt[&quot;tooltip.2&quot;, lang], 
+    &quot; &quot;, maxYear, &quot;, &quot;,
+    &quot;+&quot;, dd$pc, &quot;% &quot;, txt[&quot;tooltip.3&quot;, lang], &quot; &quot;, minYear, &quot;&lt;/span&gt;&lt;/div&gt;&quot;
+    )    
+  }
+
   
-  chart &lt;- static_lineChart(dd, label.font = fontname)
+  chart &lt;- static_lineChart(
+    dd, xaxisPadding = as.numeric(txt['xpadding', lang]), label.font = fontname)
   ichart &lt;- interactive_chart(chart, fontname = fontname)
   
   footer &lt;- paste0(

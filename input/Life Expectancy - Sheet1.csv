@@ -1,17 +1,22 @@
 code,EN,FR,DE,IT,PT,RU,ES,JA,ZH
-main.title,,Un flot de lignes ascendantes et quelques vagues,,,,,,,
-subtitle1,,Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,,,,
-h3,,Espérance de vie,,,,,,,
-caption,,L'espérance de vie à la naissance indique la moyenne du nombre d'années qu'une personne peut espérer vivre si elle naît à une année donnée et si le taux de mortalité reste constant dans l'avenir.,,,,,,,
+main.title,Ascending lines and waves,Un flot de lignes ascendantes et quelques vagues,,,,Продолжительность жизни – линии и волны,,平均寿命の推移,密集的上升线和几条波浪
+subtitle1,Each line corresponds to a country or region of the world. Move the cursor over a line for more details.,Chaque ligne correspond à un pays ou à une région du monde. Déplacez le curseur sur une courbe pour obtenir plus de détails.,,,,"Каждая линия соответствует стране или региону мира. Переведите курсор на линию, чтобы узнать более подробную информацию.",,それぞれの線上にカーソルを合わせると、国や地域ごとに平均寿命の詳細が見られます。,每条线对应一个国家或地区。将鼠标移动至线条上，便可获取相应信息。
+h3,Life expectancy ,Espérance de vie,,,,Продолжительность жизни ,,右肩上がりの多い中で波型も,预期寿命
+caption,Life expectancy at birth indicates the average number of years that a person can hope to live when born in a particular year and where the mortality rate remains constant in the future.,L'espérance de vie à la naissance indique la moyenne du nombre d'années qu'une personne peut espérer vivre si elle naît à une année donnée et si le taux de mortalité reste constant dans l'avenir.,,,,"Продолжительность жизни на момент рождения указывает на среднее количество лет, которое человек
+может рассчитывать прожить, если он родился в данный год и при условии, что в
+будущем не произойдет непредвиденных событий, влияющих на уровень смертности.
+",,平均寿命とは、その年に生まれた０歳児が平均して何歳まで生きるかを示したもの。,预期寿命指的是：假设死亡率在未来保持不变，针对某一特定年份出生的人来说，从出生日之日起计算的存活平均年数。
 source,Source,Source,Quelle,Fonte,fonte,Источник,Fuente,出典,来源
-source.txt,World Bank,Banque Mondiale,,,,,,,
+source.txt,World Bank,Banque Mondiale,,,,Всемирный банк,,世界銀行,世界银行
 source.url,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN,http://data.worldbank.org/indicator/SP.DYN.LE00.IN
-made.with,made with ,réalisé avec ,,,,,,,
+made.with,made with ,réalisé avec ,,,,,,作成,制作
 made.with.name,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph ,R ggiraph,R ggiraph 
 made.with.url,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html,https://cran.r-project.org/web/packages/ggiraph/vignettes/ggiraph.html
-inspired.by,inspired by ,inspiré par le graphique de,,,,,,,
-inspired.by.name,Nathan Yau's graphic,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau
+inspired.by,inspired by ,inspiré par le graphique de,,,,По мотивам графика,,グラフのアイデア,提供帮助
+inspired.by.name,Nathan Yau's graphic,Nathan Yau,Nathan Yau,Nathan Yau,Nathan Yau,Натана Йау (Nathan Yau),Nathan Yau,Nathan Yau,Nathan Yau
 inspired.by.url,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/,http://projects.flowingdata.com/life-expectancy/
-tooltip.2,years in ,ans en,,,,,,,
-tooltip.3,since,depuis,,,,,,,
+tooltip.2,years in ,ans en,,,,,,歳,于
+tooltip.3,since,depuis,,,,,,年比で,自从
 typeface.svg,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed,Open Sans Condensed
+xpadding,11,14,14,14,14,14,14,13,12
+tooltip.1,,,,,,,,年の平均寿命,
