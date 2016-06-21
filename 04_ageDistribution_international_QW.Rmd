@@ -34,7 +34,7 @@ data.file <- paste0("input/", paste(range(years), collapse = "_"), "_",
 ### load translations
 txt <- read.csv(translation.file, row.names = 1, stringsAsFactors = F)
 
-exludeLang <- c("EN", "FR", "IT", "PT", "ZH", "RU", "ES") #--------------!!!!!!!!!!!!!!!!!
+exludeLang <- c("EN", "FR", "IT", "PT", "ZH", "RU", "ES", "DE") #--------------!!!!!!!!!!!!!!!!!
 
 # discard incomplete translations
 cidx <- unique(which(txt =="" | is.na(txt), T)[,2])

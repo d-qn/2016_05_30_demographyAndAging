@@ -168,8 +168,9 @@ static_lineChart <- function(data, xaxisPadding = 14, label.font = "Open Sans Co
   
   ggplot(data = dd) +  
     swi_theme(y_gridlines = F, base_size = 8, base_family = "Verdana") + 
-    scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
-                       limits = c(minYear, max = maxYear + xaxisPadding)) +
+    scale_x_continuous(
+      breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = "",
+      limits = c(minYear, max = maxYear + xaxisPadding)) +
     ylab("") + 
     coord_fixed(ratio = 0.8) + 
     geom_path_interactive(
@@ -226,6 +227,7 @@ for (lang in colnames(txt)) {
   fontname <- txt["typeface.svg", lang] # font ggplot2 svg
   dd$country <- countryTranslation(as.character(dd$iso2c), lang)[,2]
   dd$country <- gsub("'", "_", dd$country)
+  
   
   if(lang == "JA") {
   dd$tooltip <- paste0(

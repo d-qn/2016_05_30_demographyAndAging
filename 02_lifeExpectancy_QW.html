@@ -99,10 +99,9 @@ cidx &lt;- unique(which(txt ==&quot;&quot; | is.na(txt), T)[,2])
 if(length(cidx &gt; 0)) {
   warning(paste(colnames(txt)[cidx], collapse = &quot;\t&quot;), &quot; languages will be discarded!&quot;, &quot;\n&quot;)
   txt &lt;- txt[,-cidx, drop = F]
-}</code></pre>
-<pre><code>## Warning: EN  FR  DE  IT  PT  RU  ES  ZH languages will be discarded!</code></pre>
-<pre class="r"><code>colnames(txt)</code></pre>
-<pre><code>## [1] &quot;JA&quot;</code></pre>
+}
+colnames(txt)</code></pre>
+<pre><code>## [1] &quot;EN&quot; &quot;FR&quot; &quot;DE&quot; &quot;IT&quot; &quot;PT&quot; &quot;RU&quot; &quot;ES&quot; &quot;JA&quot; &quot;ZH&quot;</code></pre>
 </div>
 <div id="life-expectancy" class="section level2">
 <h2>Life expectancy</h2>
@@ -228,8 +227,9 @@ le %&gt;% filter(country == &quot;World&quot;)</code></pre>
   
   ggplot(data = dd) +  
     swi_theme(y_gridlines = F, base_size = 8, base_family = &quot;Verdana&quot;) + 
-    scale_x_continuous(breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = &quot;&quot;,
-                       limits = c(minYear, max = maxYear + xaxisPadding)) +
+    scale_x_continuous(
+      breaks = seq(minYear, maxYear, 6), expand = c(0, 0), name = &quot;&quot;,
+      limits = c(minYear, max = maxYear + xaxisPadding)) +
     ylab(&quot;&quot;) + 
     coord_fixed(ratio = 0.8) + 
     geom_path_interactive(
@@ -279,6 +279,7 @@ interactive_chart &lt;- function(gpath, fontname = 'Open Sans Condensed') {
   fontname &lt;- txt[&quot;typeface.svg&quot;, lang] # font ggplot2 svg
   dd$country &lt;- countryTranslation(as.character(dd$iso2c), lang)[,2]
   dd$country &lt;- gsub(&quot;'&quot;, &quot;_&quot;, dd$country)
+  
   
   if(lang == &quot;JA&quot;) {
   dd$tooltip &lt;- paste0(

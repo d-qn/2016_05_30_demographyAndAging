@@ -23,7 +23,7 @@ library(tidyr)
 library(swiTheme)
 library(animation)
 
-languagesToDiscard <- c('EN', 'FR', 'PT', 'JA', 'IT', 'ZH', 'DE')
+languagesToDiscard <- c('EN', 'FR', 'PT', 'JA', 'IT', 'ZH', 'DE', 'RU')
 
 ```
 
@@ -145,7 +145,14 @@ sapply(langs, function(lang) {
           )
         
         if(lang %in% c('ZH', 'JA')) {
-          print(p + theme(plot.subtitle = element_text(family = txt["font.title", lang], size = 13), plot.title = element_text(size = 20)))
+          print(p + theme(
+            plot.subtitle = element_text(family = txt["font.title", lang], size = 13), 
+            plot.title = element_text(size = 20)
+            )
+          )
+        } else if (lang == "ES" ) {
+            print(p + theme(plot.title = element_text(size = 18))
+          )      
         } else {
           print(p)
         }
