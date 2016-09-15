@@ -1,0 +1,178 @@
+---
+title: "Life expectancy"
+author: "Duc-Quang Nguyen"
+date: "21 April 2016"
+output: html_document
+---
+
+## Data
+
+[US census bureau International Data Base (2015)](http://www.census.gov/data/developers/data-sets/international-database.html)
+
+
+```{r setup, include=FALSE}
+library(idbr) # devtools::install_github('walkerke/idbr')
+library(countrycode)
+library(ggplot2)
+library(animation)
+library(dplyr)
+library(swiTheme)
+
+
+countries <- c("France", "Switzerland", "Japan", "China", "United States", "Brazil", "Russia", "Morocco", "India")
+country.iso2 <- countrycode(countries, "country.name", "fips104")
+
+#translation.file <- "input/Population structures past and forecast - Sheet1.csv"
+
+downloadData <- F
+
+years <- 1990:2050
+apikey <- "901083ee90dbd111d13f5e270ca00b4abf654be6"
+data.file <- paste0("input/", paste(range(years), collapse = "_"), "_", 
+  paste(country.iso2, collapse = "_"), ".csv")
+
+
+```
+
+```{r getData, echo = F}
+if(downloadData) {
+  idb_api_key(apikey)
+  
+  data <- do.call(rbind, lapply(country.iso2, function(iso) {
+    cat("\n", iso)
+    
+    male <- idb1(iso, years, sex = 'male') %>%
+      mutate(POP = POP * -1, SEX = 'Male')
+    female <- idb1(iso, years, sex = 'female') %>%
+      mutate(SEX = 'Female')
+    
+    rbind(male, female) %>% 
+      mutate(abs_pop = abs(POP)) %>% select(-AREA_KM2)
+  }))
+  write.csv(data, file = data.file, row.names = F)
+} else {
+  data <- read.csv(data.file)
+}
+# for each year, country & sex: compute the proportion for each age
+data <- data %>% group_by(NAME, FIPS, time, SEX) %>% mutate(yearlySum = sum(abs_pop)) %>% ungroup()
+data$abs_prop <- data$abs_pop / data$yearlySum
+data$prop <- ifelse(data$SEX == "Male", data$abs_prop * -1, data$abs_prop)
+
+# sort data by youngest mean age at the beginning
+d.sort <- data %>% filter(time == min(data$time)) %>% 
+  group_by(NAME) %>% 
+  summarise(mean = mean(sum(as.numeric(AGE * abs_pop, na.rm = T)) / 
+    sum(abs_pop, na.rm = T), na.rm = T)) %>% 
+  ungroup() %>% arrange(mean)
+data$NAME <- factor(data$NAME, levels = as.character(d.sort$NAME))
+
+```
+
+```{r plot, echo = F}
+
+plotyear <- function(
+  data, 
+  y,
+  base_family = "OpenSans-CondensedLight",
+  subtitle = "Evolution de la pyramide des âges entre 1990 et 2050",
+  caption =  "Source: US Census Bureau IDB; idbr R package | swissinfo.ch",
+  age = "AGE",
+  maleFemale = c("Hommes", "Femmes"),
+  countries = c( "Maroc", "Brésil", "Chine", "Russie", "Etats-Unis", "France", "Japon", "Suisse"  )
+) 
+  {
+
+  dd <- data
+  levels(dd$NAME) <- countries
+  
+  ggplot(data = filter(dd, time == y), aes(x = AGE, y = prop, fill = SEX, width = 1)) +
+    coord_flip() +
+    # gender bars
+    geom_area(data = filter(dd, SEX == "Female", time == y)) +
+    geom_area(data = filter(dd, SEX == "Male", time == y)) +
+    # add median age
+    facet_wrap( ~ NAME, ncol = 2) + 
+    swi_theme(
+      base_size = 24, 
+      base_family = base_family, 
+      subtitle = base_family, 
+      title_family = base_family) +
+  scale_fill_manual(values = c('#663333', '#336666'),
+      labels=c(maleFemale[2], maleFemale[1])) +
+  scale_y_continuous(
+    labels = c("3%", "2%", "1%", "0%", "1%", "2%", "3%"),
+    limits = c(-max(data$abs_prop), max(data$abs_prop)),
+    name = y) +
+  scale_x_continuous(name = age) +
+  theme(
+    legend.position = "top", 
+    legend.title = element_blank(),
+    legend.key.height = unit(0.5, "lines"),
+    legend.key.width = unit(3, "lines")) + 
+  guides(fill = guide_legend(reverse = TRUE)) +
+  labs(
+    subtitle = subtitle,
+    caption = paste0(caption, " | Duc-Quang Nguyen"),
+    title = y) + 
+  theme(
+    plot.title = element_text(size = 44, hjust = 0.5, face = "bold"),
+    axis.text = element_text(size = 13),
+    axis.title.x = element_text(size = 44),
+    plot.caption = element_text(size = 14)
+  ) 
+}
+
+
+lang <- 'RU'
+plotyear(
+  data, 
+  1990,
+  base_family = txt["font", lang],
+  subtitle = txt["main.title", lang],
+  caption =  txt["source", lang],
+  age = txt["age", lang],
+  maleFemale = c(txt["male", lang], txt["female", lang]),
+  countries = c(txt["MO", lang], txt["BR", lang], txt["CH", lang], 
+    txt["RS", lang], txt["US", lang], txt["FR", lang], txt["JA", lang], txt["SZ", lang])
+) 
+
+# drop some languages
+txt <- txt[ , !(colnames(txt) %in% exludeLang), drop = F]
+
+
+for(lang in colnames(txt)) {
+  
+  output <- paste0("int_populationStrucutres_", lang, ".gif")
+  if(lang == "RU") {
+   txt["main.title", lang] <- gsub('(.{1,75})(\\s|$)', '\\1\n', txt["main.title", lang])    
+  }
+  
+  saveGIF({
+	for(y in c(unique(data$time), rep(max(data$time), 3))) {
+		print(plotyear(
+		  data = data,
+		  y = y,
+		  base_family = txt["font", lang],
+      subtitle = txt["main.title", lang],
+      caption =  txt["source", lang],
+      age = txt["age", lang],
+      maleFemale = c(txt["male", lang], txt["female", lang]),
+      countries = c(txt["MO", lang], txt["BR", lang], txt["CH", lang], 
+        txt["RS", lang], txt["US", lang], txt["FR", lang], txt["JA", lang], txt["SZ", lang])
+		  ))
+	}
+  }, movie.name = output, interval = 0.15, 
+  ani.width = 700, ani.height = 860, loop = TRUE)
+  
+}
+
+
+
+
+
+
+
+
+  
+    
+
